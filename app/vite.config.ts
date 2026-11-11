@@ -2,13 +2,14 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { handbookImages } from "./vite-plugins/handbookImages";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 /** The handbook repository is the single source of truth. It is read, never written. */
 export const HANDBOOK_DIR = path.resolve(root, "../handbook");
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), handbookImages(HANDBOOK_DIR)],
   resolve: {
     alias: {
       "@": path.resolve(root, "src"),
