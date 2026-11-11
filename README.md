@@ -1,4 +1,4 @@
-﻿# RAG Handbook Studio
+# RAG Handbook Studio
 
 A production-grade RAG architecture handbook (`handbook/`) and the interactive reading application that renders it (`app/`).
 

@@ -1,4 +1,4 @@
-﻿# Implementation plan and architecture decisions
+# Implementation plan and architecture decisions
 
 ## Stack
 

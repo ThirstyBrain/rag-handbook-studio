@@ -1,4 +1,4 @@
-﻿# Dependencies / build output
+# Dependencies / build output
 node_modules/
 dist/
 .vite/

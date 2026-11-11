@@ -1,11 +1,11 @@
-﻿#!/usr/bin/env node
+#!/usr/bin/env node
 /**
  * Runs every handbook exercise (and every command-line variant a chapter cites, e.g. `--mutants`)
  * and records the REAL output in src/generated/exercise-runs.json.
  *
  * The handbook is read-only: scripts run with -I (isolated) and -B (no __pycache__ written).
  * If no Python interpreter is found, the previous capture is kept and the script exits 0,
- * so the app still builds â€” the UI shows the capture date so stale output is visible.
+ * so the app still builds — the UI shows the capture date so stale output is visible.
  *
  * Usage: node scripts/capture-exercises.mjs [filter]
  */
