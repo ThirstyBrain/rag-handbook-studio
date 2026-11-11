@@ -1,0 +1,21 @@
+sequenceDiagram
+  participant H as Request handler
+  participant D as Database layer
+  participant P as Connection pool
+  participant G as PostgreSQL as rag_app
+  H->>D: run(identity, work)
+  D->>P: acquire a connection
+  P-->>D: connection with no identity state
+  D->>G: BEGIN
+  D->>G: set_config tenant, user and groups with is_local true
+  D->>G: work SQL, queries and writes
+  Note over G: RLS policies read app.tenant_id and app.groups and raise an error if they are missing
+  G-->>D: only rows of this tenant and ACL
+  alt work succeeded
+    D->>G: COMMIT
+  else any exception
+    D->>G: ROLLBACK
+  end
+  Note over G: transaction-local settings vanish at the end of the transaction
+  D->>P: release the connection for the next request
+  D-->>H: result or error

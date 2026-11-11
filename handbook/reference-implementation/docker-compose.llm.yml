@@ -1,0 +1,33 @@
+# Optional override that turns on the LLM gateway in the API container.
+#   cp config/llm-gateway.example.toml config/llm-gateway.toml   # edit models; no secrets in the file
+#   docker compose -f docker-compose.yml -f docker-compose.llm.yml up -d --build
+# Provider keys are passed through from your shell/.env; they are never written to a file or image.
+# To reach Ollama running on the host from the container use http://host.docker.internal:11434/v1
+# as the provider base_url in llm-gateway.toml.
+services:
+  api:
+    environment:
+      RAG_LLM_CONFIG_FILE: /app/config/llm-gateway.toml
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+    volumes:
+      - ./config:/app/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    # Note: the api service runs as a non-root user with a read-only root filesystem; the config
+    # directory is mounted read-only and must be readable by uid 10001.
+
+  # The worker embeds chunks during ingestion through the gateway's `embed` route (ADR-017). Chunk text is
+  # sent to whichever providers that route lists, so keep a local provider first for restricted data.
+  worker:
+    environment:
+      RAG_EMBEDDING_ENABLED: "true"
+      RAG_LLM_CONFIG_FILE: /app/config/llm-gateway.toml
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      XAI_API_KEY: ${XAI_API_KEY:-}
+    volumes:
+      - ./config:/app/config:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

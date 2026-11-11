@@ -1,0 +1,21 @@
+flowchart TB
+  subgraph R1["Region A (primary)"]
+    subgraph Z1["Zone 1"]
+      PRI[("Postgres primary")]
+    end
+    subgraph Z2["Zone 2"]
+      STB[("Hot standby: synchronous")]
+    end
+    APP1["App tier"] --> PRI
+    PRI -->|"sync replication: RPO 0 for zone failure"| STB
+    RAW1[("Raw documents: geo-redundant")]
+    BKP[("Backups: 7 to 35 days; PITR")]
+  end
+  subgraph R2["Region B (DR)"]
+    REP[("Cross-region read replica: async, manual promotion")]
+    APP2["App tier (cold or warm)"]
+    IDX2[("Search index: rebuild from raw docs")]
+  end
+  PRI -.->|"async, lag typically minutes"| REP
+  RAW1 -.-> IDX2
+  APP2 -.->|"after forced promotion"| REP

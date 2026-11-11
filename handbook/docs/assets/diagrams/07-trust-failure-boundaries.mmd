@@ -1,0 +1,22 @@
+flowchart LR
+  subgraph T0["Boundary 0: untrusted"]
+    USER["User input"]
+    DOCS["Document content: untrusted, attacker-influenced"]
+  end
+  subgraph T1["Boundary 1: application, trusted code"]
+    AUTH["AuthN/Z + identity object"]
+    FILT["Retrieval filters: tenant + ACL"]
+    BUILD["Prompt builder: confines untrusted text"]
+    CHECK["Deterministic output validation"]
+  end
+  subgraph T2["Boundary 2: data tier"]
+    STORE[("Index + RLS")]
+  end
+  subgraph T3["Boundary 3: model providers, probabilistic"]
+    MODEL["LLM: may follow injected instructions"]
+  end
+  USER --> AUTH --> FILT --> STORE
+  DOCS --> STORE
+  STORE -->|"only authorized chunks"| BUILD --> MODEL --> CHECK
+  CHECK -->|"validated answer only"| USER
+  MODEL -. "cannot be the authorization boundary" .-> FILT

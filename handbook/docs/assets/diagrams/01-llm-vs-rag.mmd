@@ -1,0 +1,12 @@
+flowchart LR
+  subgraph T["Traditional LLM"]
+    Q1[Query] --> M1[LLM weights <br> parametric memory] --> A1[Answer <br> no source, may be stale]
+  end
+  subgraph R["RAG"]
+    Q2[Query + caller identity] --> RET[Retriever <br> authorized sources only]
+    KB[(Knowledge index <br> non-parametric memory)] --> RET
+    RET --> CTX[Evidence as delimited data]
+    Q2 --> PR[Prompt builder]
+    CTX --> PR --> M2[LLM] --> A2[Answer + citations]
+    A2 --> VAL[Citation / grounding check]
+  end

@@ -1,0 +1,29 @@
+flowchart LR
+  subgraph TB1["Trust boundary: caller"]
+    U["User or client"]
+  end
+  subgraph TB2["Trust boundary: application"]
+    API["API: authenticate, authorize, quotas"]
+    RET["Retrieval with tenant and ACL filters, then access re-check"]
+    CTX["Context assembly: framed, escaped evidence"]
+    OUT["Output policy: no images, no HTML, allow-listed links"]
+  end
+  subgraph TB3["Trust boundary: data stores"]
+    DB[("PostgreSQL: row-level security, vectors")]
+    OBJ[("Object store: raw files")]
+  end
+  subgraph TB4["Trust boundary: ingestion"]
+    WK["Worker: narrow role"]
+    SBX["Sandboxed parser: no credentials"]
+  end
+  subgraph TB5["Trust boundary: external"]
+    GW["LLM gateway: sensitivity policy"]
+    LLM["Model provider"]
+    DOCS["Untrusted documents"]
+  end
+  U --> API --> RET --> DB
+  RET --> CTX --> GW --> LLM
+  LLM --> OUT --> U
+  DOCS -->|"hostile text enters here"| WK --> SBX
+  WK --> DB
+  WK --> OBJ

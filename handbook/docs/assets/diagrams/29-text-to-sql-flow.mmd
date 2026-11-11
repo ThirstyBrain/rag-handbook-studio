@@ -1,0 +1,8 @@
+flowchart LR
+  Q["Business question"] --> S["Retrieve schema, metric definitions and sample values"]
+  S --> G["Generate SQL from governed metrics where one exists"]
+  G --> X["Execute under the guard"]
+  X --> N["Numbers come from the query, never from model arithmetic"]
+  N --> A["Answer with the SQL, the result table and its freshness"]
+  A --> F["Feedback and golden cases"]
+  F --> EV["Evaluate by execution on several datasets"]

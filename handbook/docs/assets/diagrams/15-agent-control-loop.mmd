@@ -1,0 +1,22 @@
+flowchart TD
+  U["User request + verified identity"] --> LC["Loop controller: step budget, token budget, repeat detector, deadline"]
+  LC --> M["Model proposes: a tool call or a final answer"]
+  M -->|"final answer"| OUT["Output validation, citation check, then respond"]
+  M -->|"tool call"| TB{{"Trust boundary: model output is untrusted"}}
+  TB --> AL{"Tool in this request's allow-list?"}
+  AL -->|"no"| DEN["Deny and record: not_allowed"]
+  AL -->|"yes"| SV{"Arguments match the schema, no identity fields?"}
+  SV -->|"no"| DEN2["Deny and record: invalid_args"]
+  SV -->|"yes"| INJ["Harness injects tenant, user and groups from the verified identity"]
+  INJ --> SE{"Side-effect tool?"}
+  SE -->|"yes"| AP{"Human approval and policy check pass?"}
+  AP -->|"no"| DEN3["Deny and record: no_approval"]
+  AP -->|"yes"| EX["Execute tool, downstream system enforces authorization again"]
+  SE -->|"no"| EX
+  EX --> OBS["Observation: untrusted data, length-limited, never treated as instructions"]
+  OBS --> AUD["Audit log: tool, argument hash, outcome, no raw text"]
+  DEN --> AUD
+  DEN2 --> AUD
+  DEN3 --> AUD
+  AUD --> LC
+  LC -->|"budget or repeat or deadline hit"| STOP["Stop with a recorded stop reason and a partial answer flagged as truncated"]

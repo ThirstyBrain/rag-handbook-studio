@@ -1,0 +1,31 @@
+sequenceDiagram
+  autonumber
+  participant C as Client
+  participant G as API layer
+  participant O as Orchestrator
+  participant K as Cache
+  participant S as Search index
+  participant M as LLM gateway
+  participant V as Validator
+  participant D as Conversation store
+  C->>G: POST /chat (token, question, conversation id)
+  G->>G: authenticate, validate size, rate limit, verify conversation ownership
+  G->>O: question + immutable identity
+  O->>K: lookup(tenant, groups hash, query terms, index version)
+  alt cache hit
+    K-->>O: validated answer
+  else miss
+    O->>S: filtered hybrid search (tenant + ACL inside query)
+    S-->>O: ranked chunks
+    alt no evidence
+      O-->>G: INSUFFICIENT_EVIDENCE (no model call)
+    else evidence
+      O->>M: constant system prompt + delimited evidence + question
+      M-->>O: answer text (streamed or complete)
+      O->>V: validate citations against supplied evidence
+      V-->>O: ok or reject
+    end
+  end
+  O->>D: persist turn, evidence ids, versions, token counts
+  O-->>G: answer + citations + status
+  G-->>C: response (stream)

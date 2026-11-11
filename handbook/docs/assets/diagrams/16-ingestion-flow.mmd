@@ -1,0 +1,17 @@
+sequenceDiagram
+  participant C as Client
+  participant A as API, role rag_app
+  participant S as Object store
+  participant D as PostgreSQL
+  participant W as Worker, role rag_worker
+  C->>A: POST /v1/documents with a streamed body
+  A->>A: enforce size cap while hashing, sniff the content type, check ACL against caller groups
+  A->>D: plan, find the document for this tenant and source id
+  A->>S: put object under tenant, document and hash if not present
+  A->>D: one transaction, lock the document row, supersede or reuse versions, enqueue job
+  A-->>C: 202 new version queued, or 200 identical content
+  W->>D: claim next job with SKIP LOCKED and a lease
+  W->>S: verify the object exists under the tenant prefix and matches its hash
+  W->>D: mark succeeded, or retry with backoff, or dead after the last attempt
+  Note over A,D: Deletion removes the rows and enqueues a delete_objects job in the same transaction
+  W->>S: delete exactly the keys in that job after checking the tenant prefix

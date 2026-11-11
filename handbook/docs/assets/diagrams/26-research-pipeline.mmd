@@ -1,0 +1,8 @@
+flowchart LR
+  Q["Research question"] --> S["Search the corpus with metadata filters: year, type, open access"]
+  S --> E["Gather evidence passages with source identifiers"]
+  E --> A["Draft claims, each tied to retrieved passage ids"]
+  A --> B["Render the bibliography from index metadata, never from model text"]
+  B --> V["Verify: quotes, support, retraction status"]
+  V --> R["Report with provenance: query, index version, date, model versions"]
+  V -->|"unsupported or retracted"| F["Flag or drop the claim and say why"]

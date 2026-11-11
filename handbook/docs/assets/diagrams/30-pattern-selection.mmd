@@ -1,0 +1,15 @@
+flowchart TD
+  S["Requirements: corpus size, query types, ACLs, update rate, latency, traffic"] --> E{"Golden evaluation set exists?"}
+  E -- "no" --> B0["Baseline only: hybrid retrieval, permission filter, rerank. Build the golden set first"]
+  E -- "yes" --> B["Baseline plus measured escalations"]
+  B --> F{"Corpus fits within half the context window, no ACLs, traffic modest?"}
+  F -- "static" --> LC["Option: long-context prompt"]
+  F -- "changing" --> RT["Option: retrieve first, long-context fallback"]
+  B --> Q{"Query types"}
+  Q -- "multi-hop, budget at least 3 s" --> IT["Iterative retrieval or decomposition"]
+  Q -- "multi-hop, budget under 3 s" --> GR["Single-step graph-assisted retrieval"]
+  Q -- "global themes" --> HS["Hierarchical or community summaries"]
+  HS --> AC{"Permission-sensitive?"}
+  AC -- "yes" --> W["Warn: build summaries only inside one permission scope, or do not use"]
+  AC -- "no" --> OK["Plan rebuild for stale summaries"]
+  Q -- "aggregations over records" --> SQL["Guarded text-to-SQL or semantic layer"]

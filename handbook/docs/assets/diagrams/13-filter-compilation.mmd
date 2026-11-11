@@ -1,0 +1,15 @@
+flowchart TD
+  U["User-supplied filter (UI facets or API)"] --> V
+  L["LLM-extracted filter (self-query), untrusted"] --> V
+  subgraph APP["Orchestrator: trusted code"]
+    V["Validate: allow-listed fields and operators, types, enums, size and depth limits"]
+    V -->|"reject"| ERR["Error or ignore-and-log, never silently widen"]
+    V -->|"accept"| C["Compile to parameterised predicate, values only as bind parameters"]
+    ID["Verified identity: tenant, groups"] --> M["Mandatory predicates: tenant, ACL, not deleted"]
+    M --> AND["AND outside the user predicate"]
+    C --> AND
+  end
+  AND --> DB[("Database: row-level security as second line of defence")]
+  DB --> PL{"Planner picks a plan from selectivity statistics"}
+  PL -->|"selective filter, btree plan"| EX["Exact scan of matching rows"]
+  PL -->|"permissive filter, ANN index plan"| ANN["Index scan then filter, may return fewer than k"]

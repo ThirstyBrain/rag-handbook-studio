@@ -1,0 +1,20 @@
+flowchart TD
+  F["Feature code: query rewrite, generation, judge, embeddings"] -->|"route name + sensitivity, never a vendor or model"| G
+  subgraph GW["LLM gateway (in-process)"]
+    G["Resolve route from configuration"] --> P{"Sensitivity policy: restricted data allowed only on local providers"}
+    P -->|"no eligible target"| E1["Fail closed: PolicyViolation or BudgetExceeded"]
+    P --> B{"Budget and circuit breaker allow this target?"}
+    B -->|"no"| N["Next target in the chain"]
+    B -->|"yes"| C["Call with timeout, token cap, temperature dropped if unsupported"]
+    C -->|"transient error"| R["Retry with backoff, then next target"]
+    C -->|"invalid request or refusal"| E2["Raise: no retry, no other provider"]
+    C -->|"success"| S["Record usage, estimated cost, content-free event"]
+    R --> N
+  end
+  N --> B
+  C --> L["Local provider adapter: OpenAI-compatible endpoint such as Ollama"]
+  C --> X1["External adapter: Claude through the official SDK"]
+  C --> X2["External adapter: OpenAI-compatible endpoint such as OpenAI or Grok"]
+  L -. "trust boundary: data stays on the machine or network" .-> M1[("Local model")]
+  X1 -. "trust boundary: prompt text leaves your environment" .-> M2[("Vendor API")]
+  X2 -. "trust boundary: prompt text leaves your environment" .-> M2

@@ -1,0 +1,18 @@
+sequenceDiagram
+  autonumber
+  participant I as Ingestion worker
+  participant Q as Query service
+  participant T as Tokenizer
+  participant E as Embedding model
+  participant V as Vector store
+  Note over I,E: Offline (per chunk)
+  I->>T: chunk text
+  T->>E: token IDs (truncate if > max input)
+  E-->>I: vector (d dims) + model_id
+  I->>V: upsert(chunk_id, vector, model_id, dims, metadata)
+  Note over Q,E: Online (per query)
+  Q->>T: query text
+  T->>E: token IDs
+  E-->>Q: query vector (same model_id)
+  Q->>V: nearest-neighbour search (filters applied)
+  V-->>Q: top-K chunk_ids + distances

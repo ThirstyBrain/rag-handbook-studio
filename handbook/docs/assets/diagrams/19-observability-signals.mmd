@@ -1,0 +1,17 @@
+flowchart LR
+  subgraph APP["Request path"]
+    REQ["Request"] --> A["Authenticate and authorize"] --> RT["Retrieve: embed, search, filter, rerank"] --> CA["Assemble context"] --> GEN["Generate and validate citations"] --> RESP["Response"]
+  end
+  APP -->|"spans per stage, identifiers only"| TR["Traces"]
+  APP -->|"counters and histograms, low-cardinality labels"| ME["Metrics"]
+  APP -->|"structured events, no content, secrets scrubbed"| LG["Logs and events"]
+  subgraph QA["Quality path"]
+    SMP["Sampler"] --> JG["Validated judges (Chapter 18)"] --> QS["Quality SLIs"]
+  end
+  RESP -.->|"sample"| SMP
+  TR --> BK["Backend: dashboards, SLOs, alerts"]
+  ME --> BK
+  LG --> BK
+  QS --> BK
+  GEN -.->|"opt-in only, short retention, access controlled"| CS[("Content store")]
+  BK --> ON["On-call: page or ticket"]

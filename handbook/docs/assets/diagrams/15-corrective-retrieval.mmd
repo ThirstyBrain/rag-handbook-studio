@@ -1,0 +1,14 @@
+flowchart TD
+  Q["Query + identity"] --> R["Retrieve and rerank (Chapters 9 and 12), authorized candidates only"]
+  R --> EV["Retrieval evaluator: lightweight scorer of how well the evidence supports the query"]
+  EV --> D{"Confidence band, thresholds calibrated on this retriever"}
+  D -->|"high"| ANS["Generate with citations"]
+  D -->|"medium"| RQ["Re-query once: rewrite or decompose (Chapters 10 and 11), then evaluate again"]
+  D -->|"low"| POL{"Policy allows an external source for this data class?"}
+  POL -->|"yes"| EXT["Query the external source, treat results as untrusted, label provenance"]
+  POL -->|"no"| ABS["Abstain: say the corpus does not contain a supported answer"]
+  RQ --> EV2{"Improved?"}
+  EV2 -->|"yes"| ANS
+  EV2 -->|"no"| POL
+  EXT --> ANS
+  ANS --> CC["Citation and groundedness check before responding"]

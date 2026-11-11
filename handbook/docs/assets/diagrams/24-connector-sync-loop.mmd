@@ -1,0 +1,11 @@
+flowchart LR
+  SRC["Source system: documents, ACLs, groups"] -->|"change feed with a state token"| CON["Connector"]
+  CON -->|"upsert by version, delete, ACL snapshot"| ING["Ingestion API"]
+  ING --> IDX[("Index: chunks carrying ACL principals")]
+  SRC -.->|"caller's current groups at query time"| QRY["Query path"]
+  IDX --> QRY
+  CON -->|"token expired or 410"| FULL["Full resync and reconcile"]
+  FULL --> IDX
+  MON["Monitor: sync lag, errors, drift"] -.-> CON
+  STALE{"Last successful sync too old?"} -->|"yes: fail closed"| DENY["Restrict or deny results"]
+  STALE -->|"no"| QRY

@@ -1,0 +1,10 @@
+flowchart LR
+  F["adr/ADR-NNN-*.md"] --> P["Parse: title, level-2 sections, status, dates, references (ignore code fences)"]
+  P --> R1["Per-record rules: title, sections, status words, dated amendments, contradictions, length"]
+  P --> R2["Corpus rules: numbering, dangling and superseded links, backlinks, dependency status"]
+  R1 --> O["Findings: error, warn, info"]
+  R2 --> O
+  O --> C["Catalogue: status, date, amendments, cited-by"]
+  O --> G{"CI gate: any error?"}
+  G -- "yes" --> X["Fail the change"]
+  G -- "no" --> Y["Warnings go to the decision owners"]

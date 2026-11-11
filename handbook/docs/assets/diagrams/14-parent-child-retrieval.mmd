@@ -1,0 +1,20 @@
+flowchart TD
+  subgraph ING["Ingestion (Chapter 3 and 4)"]
+    D["Document version"] --> S["Sections: parent records with text, title, ACL"]
+    S --> C["Child chunks: small, each with section id and ordinal"]
+    C --> E["Embed children only"] --> IDX[("Vector and lexical index over children")]
+    S --> PS[("Parent store: relational table, composite key with document version")]
+  end
+  subgraph QRY["Query time"]
+    Q["Query + verified identity"] --> H["Hybrid search over children, tenant and ACL filters inside the query"]
+    IDX --> H
+    H --> OF["Over-fetch k prime children, because several children share one parent"]
+    OF --> G["Group by parent id, keep best child rank per parent"]
+    G --> X["Expand: read the parent or a window around the hit from the parent store"]
+    PS --> X
+    X --> AC["Drop siblings the caller cannot read"]
+    AC --> B["Apply token budget, truncate to a window if needed"]
+    B --> O["Order children by ordinal, parents by best rank"]
+    O --> CTX["Context assembly (Chapter 7)"]
+  end
+  X -. "version mismatch between child and parent is rejected by the composite key" .-> PS

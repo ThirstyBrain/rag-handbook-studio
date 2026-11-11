@@ -1,0 +1,10 @@
+flowchart LR
+  Q["Developer question or edit location"] --> R1["Lexical search on identifiers"]
+  Q --> R2["Semantic search on descriptions"]
+  R1 --> FU["Fuse and rerank"]
+  R2 --> FU
+  FU --> G["Expand: definitions, callers, tests, types from the symbol index"]
+  G --> BUD["Fit the token budget: dedupe overlaps, keep signatures"]
+  BUD --> PR["Prompt with file and line citations"]
+  PR --> OUT["Answer or proposed diff, never applied unreviewed"]
+  OUT -->|"iterate"| Q

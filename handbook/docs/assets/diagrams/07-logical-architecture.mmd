@@ -1,0 +1,38 @@
+flowchart LR
+  subgraph CL["Untrusted: client"]
+    UI["Web UI"]
+  end
+  subgraph ON["Online path: application tier"]
+    API["API layer: authN, validation, rate limit, ownership checks"]
+    ORCH["Orchestrator: fixed pipeline, deadlines, budgets"]
+    QP["Query processing"]
+    CB["Context builder + prompt templates"]
+    LLMG["LLM gateway"]
+    VAL["Citation + response validator"]
+    CACHE[("Caches: embedding, retrieval, response")]
+  end
+  subgraph DT["Data tier"]
+    IDX[("Search and vector index: filters + RLS")]
+    CONV[("Conversations, feedback, audit")]
+    RAW[("Object store: raw documents")]
+  end
+  subgraph OFF["Offline path: ingestion"]
+    PIPE["Ingestion workers: extract, chunk, embed"]
+    Q[["Queue + DLQ"]]
+  end
+  subgraph EXT["Providers: external or local"]
+    EMB["Embedding model"]
+    LLM["Chat model"]
+  end
+  UI -->|"HTTPS + token"| API --> ORCH
+  ORCH --> QP --> EMB
+  ORCH --> CACHE
+  ORCH -->|"identity + query"| IDX
+  ORCH --> CB --> LLMG --> LLM
+  LLMG --> VAL --> ORCH
+  ORCH --> CONV
+  RAW --> Q --> PIPE --> EMB
+  PIPE --> IDX
+  API -. OpenTelemetry .-> OBS[("Telemetry")]
+  ORCH -. OpenTelemetry .-> OBS
+  PIPE -. OpenTelemetry .-> OBS

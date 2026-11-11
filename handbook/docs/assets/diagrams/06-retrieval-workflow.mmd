@@ -1,0 +1,25 @@
+sequenceDiagram
+  autonumber
+  participant U as Caller
+  participant O as Orchestrator
+  participant P as Query preprocessing
+  participant E as Embedder
+  participant L as Lexical index
+  participant V as Vector index
+  participant F as Fusion RRF
+  participant R as Reranker optional
+  participant A as Context assembler
+  U->>O: question + identity
+  O->>P: same cleaning as chunks
+  P->>E: query text
+  E-->>O: query vector (same model as index)
+  par candidate generation, filters applied in each
+    O->>L: keywords + tenant/ACL filter, candidate_k
+    O->>V: vector + tenant/ACL filter, candidate_k
+  end
+  L-->>F: ranked list 1
+  V-->>F: ranked list 2
+  F-->>R: fused candidates
+  R-->>A: reordered top candidates
+  A->>A: dedupe, diversify, order, delimit, budget
+  A-->>O: evidence blocks with chunk ids

@@ -1,0 +1,10 @@
+flowchart LR
+  N["Naive RAG: chunk, embed, top-k, generate"] --> A["Advanced RAG: hybrid search, query rewrite, rerank, context assembly"]
+  A --> M["Modular RAG: swappable operators composed per route"]
+  M --> R["Router: choose a path per query"]
+  R --> P1["Retrieve and answer"]
+  R --> P2["Long-context prompt"]
+  R --> P3["Iterative or agentic loop"]
+  R --> P4["Summary tree or graph index"]
+  R --> P5["Text-to-SQL"]
+  P3 -.-> T["Tools: budgeted, allow-listed, audited"]

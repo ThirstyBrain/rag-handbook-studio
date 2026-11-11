@@ -1,0 +1,11 @@
+flowchart TD
+  Q["Question + identity"] --> PP["Preprocess: same cleaning as chunks"]
+  PP --> LEX["Lexical leg: analyzer, BM25 or ts_rank_cd; tenant+ACL filter inside"]
+  PP --> EMB["Embed query, same model as index"]
+  EMB --> VEC["Dense leg: ANN; tenant+ACL filter inside"]
+  LEX -->|"ranked list, candidate_k"| FUSE{"Fusion"}
+  VEC -->|"ranked list, candidate_k"| FUSE
+  FUSE -->|"RRF or weighted RRF"| RANK["Fused candidates"]
+  FUSE -->|"normalise scores, then weighted sum"| RANK
+  RANK --> RR["Optional rerank"]
+  RR --> CTX["Dedupe, order, delimit, budget (Ch. 6)"]

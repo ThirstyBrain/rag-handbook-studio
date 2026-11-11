@@ -1,0 +1,8 @@
+flowchart TD
+  A["Hostile instruction in a document"] --> P1["Prevent reaching the model: extraction hygiene, hidden-text stripping"]
+  P1 --> P2["Contain inside the prompt: framing, escaping, per-request nonce"]
+  P2 --> D1["Detect: classifiers and monitoring, probabilistic and imperfect"]
+  D1 --> I1["Limit impact: least privilege, no side-effect tools by default, human approval"]
+  I1 --> I2["Block egress deterministically: output policy, allow-listed links, no images"]
+  I2 --> I3["Isolate data: tenant and ACL filters enforced outside the model"]
+  I3 --> R["Residual risk: the model may still be persuaded, so impact must be bounded"]

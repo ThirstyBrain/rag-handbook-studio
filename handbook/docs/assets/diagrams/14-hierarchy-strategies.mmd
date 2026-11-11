@@ -1,0 +1,14 @@
+flowchart TD
+  A["Retrieval returns the right chunk but the answer needs its surroundings"] --> B{"Is the missing context local and sequential?"}
+  B -->|"yes: neighbouring sentences"| W["Sentence window: hit plus N neighbours within a token budget"]
+  B -->|"no: the whole section or document matters"| C{"Do several children of one parent usually appear together?"}
+  C -->|"yes"| M["Auto-merging: replace sibling hits by the parent above a threshold"]
+  C -->|"no"| P["Small-to-big: always return the parent of the best child"]
+  A --> R{"Are questions corpus-wide or thematic, needing summaries?"}
+  R -->|"yes"| T["Hierarchical summaries (RAPTOR-style tree): retrieve at several abstraction levels"]
+  R -->|"no"| B
+  W --> V["Evaluate against flat chunk retrieval on the golden set"]
+  M --> V
+  P --> V
+  T --> V
+  V --> K["Keep the simplest strategy that wins on measured answer quality per context token"]

@@ -1,0 +1,14 @@
+flowchart TD
+  REQ["Deletion request for a document or a person's data"] --> ID["Resolve identifiers across stores"]
+  ID --> RAW["Raw objects: delete now"]
+  ID --> CH["Chunks and full-text index: cascade"]
+  ID --> VE["Vectors: cascade with chunks"]
+  ID --> CA["Caches and evaluation sets: delete now"]
+  ID --> BK["Backups: expire by retention, residual window stated"]
+  ID --> LG["Logs and audit: identifiers only, retention applies"]
+  RAW --> VER["Verify: no store still returns the item"]
+  CH --> VER
+  VE --> VER
+  CA --> VER
+  VER --> REC["Record the erasure with a content-free audit event"]
+  BK --> RES["Reapply the deletion after any restore"]

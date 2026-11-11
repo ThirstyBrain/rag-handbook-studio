@@ -1,0 +1,9 @@
+flowchart LR
+  O["Figure or table region"] --> TY{"Caption of the right type?"}
+  TY -->|"no"| SKIP["Not a candidate"]
+  TY -->|"yes"| COL{"Shares the object's column?"}
+  COL -->|"no"| SKIP
+  COL -->|"yes"| DIR["Score by gap, with a penalty on the unusual side"]
+  DIR --> ONE["Assign each caption to one object, nearest first"]
+  ONE --> REF["Link paragraphs that mention the label, including the abbreviation"]
+  REF --> CITE["Cite document, page and the union region"]

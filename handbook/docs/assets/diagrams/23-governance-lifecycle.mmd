@@ -1,0 +1,11 @@
+flowchart LR
+  I["Idea: register the system, name an owner"] --> T["Triage: sensitive domain, public facing, personal data"]
+  T --> R["Risk and impact assessment: DPIA where required, legal review where flagged"]
+  R --> B["Build with controls mapped to the risk framework"]
+  B --> E["Evaluate: golden set, judges validated, security tests"]
+  E --> G{"Release gate: policy checks pass, evidence attached, owner signs"}
+  G -->|"no"| B
+  G -->|"yes"| O["Operate: monitoring, audit log, incident process"]
+  O --> V["Review on a schedule and on every material change"]
+  V --> R
+  O --> X["Retire: delete or archive data, update the register"]

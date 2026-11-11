@@ -1,0 +1,1 @@
+﻿{ "name": "handbook-tools", "private": true, "version": "0.0.0", "description": "Doc tooling only (Mermaid validation). Not part of the reference implementation.", "devDependencies": { "@mermaid-js/mermaid-cli": "12.2.0" } }

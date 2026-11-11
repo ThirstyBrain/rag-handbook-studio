@@ -1,0 +1,15 @@
+flowchart LR
+  subgraph W["Write path"]
+    C["Chunks + vectors + metadata"] --> BT["Batch upsert"] --> ST[("Storage: vectors + payload")]
+    ST --> IX["Index build/update: HNSW graph or IVF lists"]
+    ST --> FI["Filter indexes: payload, inverted, partial"]
+  end
+  subgraph R["Read path"]
+    QV["Query vector + filter"] --> PL["Planner"]
+    PL --> IX
+    PL --> FI
+    IX --> CAND["Candidates"]
+    FI --> CAND
+    CAND --> RR["Exact re-score with full-precision vectors"]
+    RR --> OUT["Top-k"]
+  end

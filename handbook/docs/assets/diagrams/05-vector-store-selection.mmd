@@ -1,0 +1,19 @@
+flowchart TD
+  A["Need vector retrieval"] --> B{"Must run local or offline for dev and CI?"}
+  B -->|yes| C{"Need transactions, SQL joins, RLS in same store?"}
+  B -->|no| D{"Azure-centric, want managed hybrid + ranker?"}
+  C -->|yes| PG["pgvector on Postgres"]
+  C -->|no| E{"Very many tenants, rich filters?"}
+  E -->|yes| Q["Qdrant or Weaviate: evaluate"]
+  E -->|no| PG
+  D -->|yes| AZ["Azure AI Search"]
+  D -->|no| F{"Zero-ops managed vector service acceptable?"}
+  F -->|yes| PC["Managed vector service: evaluate Pinecone"]
+  F -->|no| G{"Billions of vectors or GPU or disk indexes?"}
+  G -->|yes| M["Milvus or tuned Qdrant: benchmark"]
+  G -->|no| Q
+  PG --> V["Validate: recall-under-filter, cost, p95 on your corpus"]
+  Q --> V
+  AZ --> V
+  PC --> V
+  M --> V

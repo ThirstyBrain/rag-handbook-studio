@@ -1,0 +1,9 @@
+flowchart TD
+  Q["Question"] --> M["Model writes SQL (untrusted text)"]
+  M --> P["Text pre-check: cheap, incomplete"]
+  P --> W["Wrap: SELECT from the query with a row cap"]
+  W --> TX["Read-only transaction with a statement timeout"]
+  TX --> R["Restricted login role: column grants, no PII columns, no set_config"]
+  R --> RLS["Row-level security keyed to the transaction's tenant setting"]
+  RLS --> OUT["Rows (capped) returned for this tenant only"]
+  DB["The database enforces the last four layers whatever the text says"] -.-> TX

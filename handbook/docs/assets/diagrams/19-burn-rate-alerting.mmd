@@ -1,0 +1,10 @@
+flowchart TD
+  SLI["SLI: good events over valid events, per minute"] --> ER["Error ratio over the long window"]
+  SLI --> ES["Error ratio over the short window"]
+  ER --> BL["Burn rate = error ratio / (1 - SLO)"]
+  ES --> BS["Burn rate = error ratio / (1 - SLO)"]
+  BL --> AND{"Both at or above the rule's burn rate?"}
+  BS --> AND
+  AND -->|"1h and 5m at 14.4, or 6h and 30m at 6"| PAGE["Page"]
+  AND -->|"3d and 6h at 1"| TICKET["Ticket"]
+  AND -->|"otherwise"| QUIET["No alert"]

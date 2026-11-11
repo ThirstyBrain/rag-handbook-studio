@@ -1,0 +1,10 @@
+flowchart TD
+  F["Source file"] --> P["Parse to a syntax tree"]
+  P --> U["Units: functions, methods, class headers, runs of module statements"]
+  U --> BIG{"Unit longer than the size cap?"}
+  BIG -->|"yes"| SP["Split at statement boundaries inside the unit"]
+  BIG -->|"no"| KEEP["Keep the unit whole"]
+  SP --> H["Prefix a context header: file, class, function"]
+  KEEP --> H
+  H --> PART["Check: chunks partition the file, boundaries are statement boundaries"]
+  PART --> IDX[("Index with a stable chunk id: path, qualified name, content hash")]

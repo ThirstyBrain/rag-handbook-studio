@@ -1,0 +1,131 @@
+.gl__tools {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 10;
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr) auto;
+  gap: var(--s-4);
+  align-items: center;
+  padding: var(--s-3) 0;
+  margin-bottom: var(--s-5);
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+}
+.gl__alpha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.gl__letter {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--r-xs);
+  background: transparent;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.gl__letter:hover:not(:disabled) {
+  background: var(--paper-2);
+}
+.gl__letter[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--surface);
+}
+.gl__letter:disabled {
+  color: var(--rule-strong);
+  cursor: default;
+}
+.gl__count {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.gl__group {
+  display: grid;
+  grid-template-columns: 80px minmax(0, 1fr);
+  gap: var(--s-5);
+  padding: var(--s-5) 0;
+  border-top: 1px solid var(--ink);
+}
+.gl__L {
+  font-size: var(--fs-3xl);
+  line-height: 1;
+  font-weight: 600;
+  color: var(--faint);
+  letter-spacing: -0.04em;
+}
+.gl__list {
+  margin: 0;
+}
+.gl__entry {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) minmax(0, 5fr);
+  gap: var(--s-5);
+  padding: var(--s-4) 0;
+  border-bottom: 1px solid var(--rule);
+  scroll-margin-top: calc(var(--header-h) + 80px);
+}
+.gl__entry:last-child {
+  border-bottom: 0;
+}
+.gl__entry:target {
+  animation: gl-target 1.8s var(--ease-out);
+}
+@keyframes gl-target {
+  from {
+    background: var(--teal-wash);
+  }
+}
+.gl__term {
+  font-weight: 600;
+  line-height: 1.45;
+}
+.gl__def {
+  margin: 0;
+  color: var(--ink-2);
+  line-height: 1.65;
+  max-width: 68ch;
+}
+.gl__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.gl__ch,
+.gl__rel {
+  font-size: var(--fs-xs);
+  padding: 3px 9px;
+  border-radius: 999px;
+  transition: background var(--t-fast);
+}
+.gl__ch {
+  background: var(--teal-wash);
+  color: var(--teal);
+  font-weight: 600;
+}
+.gl__rel {
+  border: 1px solid var(--rule-strong);
+  color: var(--ink-2);
+}
+.gl__rel:hover {
+  border-color: var(--ink);
+}
+@media (max-width: 900px) {
+  .gl__tools {
+    grid-template-columns: 1fr;
+    gap: var(--s-2);
+    position: static;
+  }
+  .gl__group {
+    grid-template-columns: 1fr;
+    gap: var(--s-2);
+  }
+  .gl__entry {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}

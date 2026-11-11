@@ -1,0 +1,17 @@
+flowchart LR
+  subgraph W["Worker process, role rag_worker, holds database credentials"]
+    J["Claim job; check tenant prefix, presence and hash"]
+    R["Read the raw bytes from the object store"]
+    V["Validate the child's answer as untrusted data"]
+    C["Chunk: sections, sentences, table headers, overlap"]
+    P["Replace the version's chunks in one tenant-scoped transaction"]
+  end
+  subgraph S["Sandboxed child: empty environment, scratch directory, timeout, output cap, POSIX rlimits"]
+    X["Parse PDF, DOCX, HTML, Markdown or text"]
+  end
+  DB[("PostgreSQL: staged version of one tenant, chunk writes only")]
+  J --> R
+  R -->|"file bytes on stdin"| X
+  X -->|"JSON blocks or a safe reason code"| V
+  V --> C --> P --> DB
+  V -.->|"rejected: mark version failed, end job as dead"| DB

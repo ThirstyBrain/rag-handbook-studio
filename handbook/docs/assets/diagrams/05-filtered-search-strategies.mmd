@@ -1,0 +1,12 @@
+flowchart TD
+  Q["Query vector + filter: tenant and ACL"] --> S{"How selective is the filter?"}
+  S -->|"very selective: few rows pass"| EX["Exact search on filtered subset<br/>partial index, partition, or brute force"]
+  S -->|"moderately selective"| PRE{"Store supports in-traversal pre-filter?"}
+  S -->|"barely selective: most rows pass"| ANN["Plain ANN, then cheap post-filter"]
+  PRE -->|"yes: Azure preFilter, Qdrant filterable HNSW"| PF["Pre-filter during traversal"]
+  PRE -->|"no: pgvector"| IT["ANN + iterative scan until k matches<br/>bounded by max scan limit"]
+  EX --> R["Return top-k"]
+  PF --> R
+  IT --> R
+  ANN --> R
+  R --> V["Verify: recall-under-filter test on golden set"]

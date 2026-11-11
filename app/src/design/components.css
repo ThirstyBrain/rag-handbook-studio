@@ -1,0 +1,302 @@
+/* Shared UI primitives. Feature-specific styles live next to their feature. */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  font-weight: 550;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition:
+    background var(--t-fast),
+    border-color var(--t-fast),
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn--primary {
+  background: var(--ink);
+  color: var(--surface);
+}
+.btn--primary:hover {
+  background: var(--navy-2);
+  box-shadow: 0 6px 18px -8px rgb(6 24 44 / 0.5);
+}
+.btn--quiet {
+  background: var(--surface);
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+.btn--quiet:hover {
+  border-color: var(--ink);
+}
+.btn--small {
+  height: 34px;
+  padding: 0 12px;
+  font-size: var(--fs-xs);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--faint);
+}
+.status--complete::before,
+.status--accepted::before {
+  background: var(--teal-bright);
+}
+.status--proposed::before {
+  background: var(--amber-bright);
+}
+.status--pending::before {
+  background: transparent;
+  border: 1.5px solid var(--faint);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--rule-strong);
+  background: var(--surface);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  transition:
+    background var(--t-fast),
+    color var(--t-fast),
+    border-color var(--t-fast);
+}
+.chip:hover {
+  border-color: var(--ink);
+}
+.chip[aria-pressed="true"],
+.chip[aria-selected="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--surface);
+}
+
+.field {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-size: var(--fs-base);
+  transition:
+    border-color var(--t-fast),
+    box-shadow var(--t-fast);
+}
+.field::placeholder {
+  color: var(--faint);
+}
+.field:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--teal-bright) 25%, transparent);
+}
+
+/* Page heading used by every secondary page */
+.page-head {
+  padding-block: var(--s-8) var(--s-6);
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: var(--s-7);
+}
+.page-head__title {
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-display);
+  max-width: 22ch;
+}
+.page-head__lede {
+  margin-top: var(--s-4);
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: var(--fs-lg);
+  line-height: 1.55;
+}
+@media (max-width: 767px) {
+  .page-head {
+    padding-block: var(--s-7) var(--s-5);
+  }
+  .page-head__title {
+    font-size: var(--fs-2xl);
+  }
+  .page-head__lede {
+    font-size: var(--fs-base);
+  }
+}
+
+/* Loading, empty, error */
+.state-block {
+  padding-block: var(--s-9);
+  max-width: 640px;
+}
+.state-block__code {
+  font-family: var(--font-mono);
+  color: var(--faint);
+  font-size: var(--fs-lg);
+}
+.state-block__title {
+  font-size: var(--fs-2xl);
+  margin-top: var(--s-2);
+}
+.state-block__text {
+  color: var(--muted);
+  margin-top: var(--s-3);
+  line-height: 1.6;
+}
+.state-block__actions,
+.state-block .btn {
+  margin-top: var(--s-5);
+}
+.state-block__actions {
+  display: flex;
+  gap: var(--s-3);
+  flex-wrap: wrap;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--s-9) var(--gutter);
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  justify-content: center;
+}
+.loading__bar {
+  width: 120px;
+  height: 2px;
+  background: var(--rule);
+  overflow: hidden;
+  border-radius: 2px;
+  position: relative;
+}
+.loading__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: var(--ink);
+  animation: loading-slide 1.1s var(--ease-in-out) infinite;
+}
+@keyframes loading-slide {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+.empty {
+  padding: var(--s-7) var(--s-5);
+  border: 1px dashed var(--rule-strong);
+  border-radius: var(--r-md);
+  text-align: center;
+  color: var(--muted);
+}
+.empty__title {
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: var(--s-2);
+}
+
+/* A recurring structural device: a labelled hairline that introduces a band of content. */
+.band-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: var(--s-6);
+  align-items: end;
+  padding-bottom: var(--s-5);
+  margin-bottom: var(--s-6);
+  border-bottom: 1px solid var(--ink);
+}
+.band-head__title {
+  font-size: var(--fs-2xl);
+  line-height: 1.15;
+  letter-spacing: var(--tracking-display);
+}
+.band-head__text {
+  color: var(--muted);
+  max-width: 58ch;
+  line-height: 1.6;
+}
+@media (max-width: 767px) {
+  .band-head {
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+  }
+  .band-head__title {
+    font-size: var(--fs-xl);
+  }
+}
+
+/* Reveal-on-scroll, used sparingly (once per band). Visible by default; useReveal marks only
+   below-the-fold content as pending, so nothing stays hidden if JavaScript or the observer fails. */
+.reveal {
+  transition:
+    opacity var(--t-slow) var(--ease-out),
+    transform var(--t-slow) var(--ease-out);
+}
+.reveal[data-reveal-pending] {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgb(6 24 44 / 0.38);
+  backdrop-filter: blur(2px);
+  animation: fade-in var(--t-med) var(--ease-out);
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Evidence colour fills (shared by bars, legends and dots) */
+.ev-bg--x {
+  background: var(--teal-bright);
+}
+.ev-bg--s {
+  background: var(--blue-bright);
+}
+.ev-bg--e {
+  background: #a9b1bd;
+}
+.ev-bg--v {
+  background: #d98b8b;
+}
+.ev-bg--i,
+.ev-bg--a,
+.ev-bg--n {
+  background: var(--amber-bright);
+}
+

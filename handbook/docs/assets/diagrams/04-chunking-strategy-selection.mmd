@@ -1,0 +1,16 @@
+flowchart TD
+  A["Extracted document: Markdown or layout JSON"] --> B{"Has reliable structure?"}
+  B -->|yes| C["Split by section headings"]
+  B -->|no| D["Recursive split: paragraph, sentence, word"]
+  C --> E{"Block type"}
+  E -->|table| F["Split by rows, repeat header"]
+  E -->|code| G["Keep function or block atomic"]
+  E -->|prose| H["Group paragraphs to token limit, overlap within section"]
+  D --> H
+  F --> I["Attach heading path + metadata + IDs"]
+  G --> I
+  H --> I
+  I --> J{"Context still lost?"}
+  J -->|yes, measured| K["Add chunk context or parent-child expansion"]
+  J -->|no| L["Embed heading path + text"]
+  K --> L

@@ -1,0 +1,15 @@
+flowchart TD
+  U["User request"] --> L1["Layer 1: client retries 3 times"]
+  L1 --> L2["Layer 2: service retries 3 times"]
+  L2 --> L3["Layer 3: gateway retries 3 times"]
+  L3 --> D["Degraded dependency"]
+  D -->|"each layer multiplies attempts"| AMP["Work amplification on the weakest component"]
+  subgraph FIX["Controls"]
+    C1["Retry at one layer only"]
+    C2["Retry budget across the process"]
+    C3["Exponential backoff with jitter"]
+    C4["Propagate the caller's deadline"]
+    C5["Shed expired and excess work early"]
+    C6["Circuit breaker per dependency"]
+  end
+  AMP -.-> FIX

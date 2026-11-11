@@ -1,0 +1,14 @@
+flowchart TD
+  F["Query with a metadata or ACL filter"] --> S{"How many rows does the filter keep?"}
+  S -->|"very few"| EX["Exact path: B-tree on the filter column, scan the few rows"]
+  S -->|"a handful of distinct filter values"| PI["Partial index per value"]
+  S -->|"many distinct values, such as tenants"| PT["Partition by the filter value"]
+  S -->|"a large share of rows"| IT["Approximate index with iterative scan enabled"]
+  EX --> CK["Check: rows returned, recall against exact, latency"]
+  PI --> CK
+  PT --> CK
+  IT --> CK
+  CK --> OK{"Recall and latency acceptable?"}
+  OK -->|"no"| RE["Raise ef_search or change strategy"]
+  OK -->|"yes"| DONE["Record the measurement and the settings"]
+  RE --> CK

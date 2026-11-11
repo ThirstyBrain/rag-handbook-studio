@@ -1,0 +1,14 @@
+flowchart LR
+  Q["Query"] --> EM["Embed the query: batch, cache by exact text"]
+  EM --> RT["Retrieve: ef_search, index type, quantization, filter strategy"]
+  Q --> LX["Lexical search in parallel"]
+  RT --> FU["Fuse candidates"]
+  LX --> FU
+  FU --> RR["Rerank only the top candidates"]
+  RR --> CX["Assemble context: k, chunk size, dedupe, order"]
+  CX --> GN["Generate: model route, static prefix caching, output cap, streaming"]
+  GN --> VA["Validate citations"]
+  VA --> A["Answer"]
+  M1["Measure per stage: p50, p95, p99, tokens, cost"] -.-> RT
+  M1 -.-> RR
+  M1 -.-> GN

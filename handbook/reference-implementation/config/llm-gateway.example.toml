@@ -1,0 +1,85 @@
+# LLM gateway configuration (example). Copy to llm-gateway.toml, edit, and point RAG_LLM_CONFIG_FILE at it.
+#
+# Rules
+# - No secrets here. A provider names an environment variable (api_key_env); the gateway reads it at start-up.
+# - Model identifiers live here, never in application code. The ones below are placeholders: replace them
+#   with models you have access to (check each vendor's current model list).
+# - Prices are optional and operator-supplied (USD per million tokens). The repository ships none.
+# - "locality" drives the data-sensitivity policy: requests marked `restricted` are only ever sent to
+#   providers with locality = "local".
+# - Order a route's chain cheapest/most private first (local before cloud): that is the fallback order.
+
+strict = false                       # true: refuse to start if a route has no usable provider (use in production)
+# external_daily_budget_usd = 25.0   # optional cap on external spend per UTC day; needs prices for external models
+
+[breaker]
+failure_threshold = 5                # consecutive failures before a provider is skipped
+reset_after_s = 30                   # then one trial call is allowed
+
+[backoff]
+base_s = 0.5
+cap_s = 8.0
+
+# ---------------------------------------------------------------- providers
+
+[providers.local]                    # Ollama on the host (OpenAI-compatible endpoint)
+kind = "openai_compat"
+locality = "local"
+base_url = "http://127.0.0.1:11434/v1"      # from a container on Docker Desktop: http://host.docker.internal:11434/v1
+
+[providers.claude]                   # Anthropic through the official SDK
+kind = "anthropic"
+locality = "external"
+api_key_env = "ANTHROPIC_API_KEY"
+
+[providers.openai]                   # OpenAI-compatible; unverified against vendor docs in this repository
+kind = "openai_compat"
+locality = "external"
+base_url = "https://api.openai.com/v1"
+api_key_env = "OPENAI_API_KEY"
+max_tokens_param = "max_completion_tokens"  # set if the model rejects max_tokens
+
+[providers.grok]                     # xAI Grok; chat-completions path unverified (docs read documented /v1/responses)
+kind = "openai_compat"
+locality = "external"
+base_url = "https://api.x.ai/v1"
+api_key_env = "XAI_API_KEY"
+
+# ---------------------------------------------------------------- routes (purposes)
+
+[routes.answer]                      # final grounded answer
+kind = "chat"
+max_attempts_per_target = 2
+timeout_s = 60
+max_output_tokens = 4096
+chain = [
+  { provider = "local",  model = "REPLACE-with-a-local-model" },
+  { provider = "claude", model = "REPLACE-with-a-claude-model" },
+]
+
+[routes.rewrite]                     # query rewriting, cheap and fast
+kind = "chat"
+timeout_s = 20
+max_output_tokens = 256
+chain = [
+  { provider = "local", model = "REPLACE-with-a-small-local-model" },
+]
+
+[routes.judge]                       # evaluation judge: usually the strongest model you allow
+kind = "chat"
+timeout_s = 120
+chain = [
+  { provider = "claude", model = "REPLACE-with-a-claude-model" },
+]
+
+[routes.embed]                       # embeddings: every target must share one embedding_space
+kind = "embed"
+max_batch = 64
+chain = [
+  { provider = "local",  model = "REPLACE-with-an-embedding-model", embedding_space = "my-space-v1" },
+]
+
+# ---------------------------------------------------------------- prices (optional, "provider/model")
+# [prices."claude/REPLACE-with-a-claude-model"]
+# input_per_mtok  = 0.0
+# output_per_mtok = 0.0

@@ -1,0 +1,15 @@
+flowchart TB
+  INTERNET(("Internet")) --> AGW["Gateway + WAF: only public entry"]
+  subgraph VNET["Private network"]
+    AGW --> APP["App tier: API + orchestrator (Container Apps or App Service)"]
+    APP -->|"private endpoint, managed identity"| DB[("Postgres + pgvector or AI Search")]
+    APP -->|"private endpoint, managed identity"| MODEL["Model endpoints"]
+    APP --> CONV[("Conversation store")]
+    WORK["Ingestion workers"] --> DB
+    WORK --> BLOB[("Blob storage: raw docs")]
+    SB[["Service Bus + DLQ"]] --> WORK
+    APP -. egress .-> FW["Firewall: FQDN allow-list"]
+  end
+  KV[("Key Vault")] --> APP
+  APP -. diagnostics .-> LA[("Log Analytics + OTel backend")]
+  WORK -. diagnostics .-> LA

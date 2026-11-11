@@ -1,0 +1,19 @@
+flowchart LR
+  SRC["Source systems"] --> CON["Connector: events + reconciliation"]
+  CON --> RAW[("Raw object store: immutable, hashed")]
+  CON --> Q1[["Ingest queue"]]
+  Q1 --> EX["Extract: native, layout, OCR"]
+  EX --> NORM["Normalize, clean, detect language"]
+  NORM --> META["Extract metadata + capture ACL"]
+  META --> CHK{"Content hash changed?"}
+  CHK -->|no| SKIP["Skip: idempotent no-op"]
+  CHK -->|yes| CHUNK["Chunk (Ch. 4)"]
+  CHUNK --> EMB["Embed (Ch. 2, 5)"]
+  EMB --> IDX[("Index: vectors + FTS + metadata")]
+  IDX --> ACT["Activate version, retire old chunks"]
+  EX -. "permanent failure" .-> DLQ[["Dead-letter queue"]]
+  EMB -. "retries exhausted" .-> DLQ
+  DEL["Delete signal"] --> PURGE["Purge chunks, caches, derived data"]
+  PURGE --> IDX
+  ACT --> AUD[("Audit and lineage log")]
+  PURGE --> AUD

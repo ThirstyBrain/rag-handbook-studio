@@ -1,0 +1,284 @@
+/*
+ * Theme layer: carries the landing page's identity (ivory light, azure illumination, navy ink,
+ * teal and cyan signals, blueprint grid) into every internal page. Loaded after the component
+ * and feature styles' shared primitives; uses tokens only.
+ */
+
+/* ---------------------------------------------------------------- page heads: full-bleed blueprint band */
+.page-head {
+  position: relative;
+  isolation: isolate;
+  border-bottom: 0;
+  padding-block: clamp(40px, 5vw, 72px) clamp(32px, 4vw, 52px);
+  margin-bottom: var(--s-7);
+}
+.page-head::before,
+.page-head::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: calc(var(--header-h) * -1);
+  bottom: 0;
+  left: calc(50% - 50vw);
+  right: calc(50% - 50vw);
+  pointer-events: none;
+}
+.page-head::before {
+  background:
+    linear-gradient(180deg, rgb(248 245 239 / 0) 45%, var(--paper) 100%),
+    var(--grad-hero);
+}
+.page-head::after {
+  background-image:
+    linear-gradient(rgb(11 34 61 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(11 34 61 / 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, transparent 0%, rgb(0 166 166 / 0.55) 30%, rgb(49 212 229 / 0.7) 60%, transparent 100%);
+  background-size:
+    32px 32px,
+    32px 32px,
+    100% 1.5px;
+  background-position:
+    0 0,
+    0 0,
+    0 100%;
+  background-repeat: repeat, repeat, no-repeat;
+  mask-image: linear-gradient(100deg, transparent 25%, #000 70%);
+  -webkit-mask-image: linear-gradient(100deg, transparent 25%, #000 70%);
+}
+.page-head__eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: var(--s-3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.page-head__eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--teal-bright), var(--cyan));
+}
+.page-head__title {
+  font-size: clamp(2.3rem, 1.4rem + 2.6vw, 3.6rem);
+  font-weight: 780;
+  letter-spacing: -0.045em;
+  line-height: 1;
+  color: var(--ink);
+  animation: theme-up 600ms var(--ease-out) both;
+}
+.page-head__lede {
+  color: var(--ink-2);
+  animation: theme-up 600ms 90ms var(--ease-out) both;
+}
+@keyframes theme-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ---------------------------------------------------------------- buttons, chips, fields */
+.btn {
+  border-radius: var(--r-pill);
+}
+.btn--primary {
+  background: linear-gradient(120deg, var(--ink) 0%, #0b3a4f 100%);
+  color: var(--on-dark);
+  box-shadow: 0 10px 22px -14px rgb(6 24 44 / 0.75);
+}
+.btn--primary:hover {
+  background: linear-gradient(120deg, var(--navy-2) 0%, #0d4a63 100%);
+  box-shadow: 0 12px 26px -14px rgb(6 24 44 / 0.8), var(--glow-cyan);
+}
+.btn--quiet {
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  border-color: var(--rule-strong);
+}
+.btn--quiet:hover {
+  border-color: var(--teal-bright);
+  color: var(--teal);
+}
+.chip:hover {
+  border-color: var(--teal-bright);
+}
+.chip[aria-pressed="true"],
+.chip[aria-selected="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  box-shadow: 0 6px 14px -8px rgb(6 24 44 / 0.7);
+}
+.field {
+  border-radius: var(--r-md);
+}
+.field:focus {
+  border-color: var(--teal-bright);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--teal-bright) 18%, transparent);
+}
+
+/* ---------------------------------------------------------------- section heads */
+.band-head {
+  border-bottom: 0;
+  position: relative;
+}
+.band-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: linear-gradient(90deg, var(--ink) 0%, var(--ink) 45%, var(--teal-bright) 75%, transparent 100%);
+}
+.band-head--dark::after {
+  background: linear-gradient(90deg, var(--on-dark-2) 0%, var(--cyan) 60%, transparent 100%);
+}
+.band-head__title {
+  font-weight: 760;
+  letter-spacing: -0.04em;
+}
+
+/* ---------------------------------------------------------------- dark technical bands */
+html .band--bench,
+html .explore {
+  background: var(--grad-deep);
+}
+html .explore {
+  border: 1px solid rgb(49 212 229 / 0.18);
+  box-shadow: var(--shadow-float);
+}
+
+/* ---------------------------------------------------------------- panels: shared surface treatment */
+html .lab__query,
+html .lab__panel,
+html .amap,
+html .stage__diagram .diagram,
+html .prose .diagram,
+html .table-wrap,
+html .ch-foot__page,
+html .otp__ev,
+html .anatomy {
+  border-radius: var(--r-lg);
+}
+html .lab__query,
+html .lab__panel {
+  box-shadow: var(--shadow-sheet);
+  border-color: color-mix(in srgb, var(--rule) 70%, transparent);
+}
+html .table-wrap {
+  box-shadow: 0 10px 30px -24px rgb(6 24 44 / 0.4);
+}
+html .prose th {
+  background: linear-gradient(180deg, var(--blue-wash), var(--surface));
+}
+
+/* ---------------------------------------------------------------- reader: blueprint band behind the chapter head */
+html .reader-wrap {
+  position: relative;
+  isolation: isolate;
+}
+html .reader-wrap::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 0;
+  top: calc(var(--header-h) * -1);
+  height: 620px;
+  background:
+    linear-gradient(180deg, transparent 60%, var(--paper) 100%),
+    var(--grad-hero);
+  pointer-events: none;
+}
+html .ch-head__num {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-xs);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+html .ch-head__num::before {
+  content: "Chapter";
+}
+html .ch-head__num::after {
+  content: "";
+  width: 40px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--teal-bright), var(--cyan));
+}
+html .ch-head__title {
+  font-weight: 780;
+  letter-spacing: -0.045em;
+}
+html .ch-head__facts {
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rule) 80%, transparent), 0 14px 30px -24px rgb(6 24 44 / 0.45);
+  padding: 4px 16px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+html .ch-side__link[aria-current="page"] {
+  border-left-color: var(--teal-bright);
+  color: var(--ink);
+}
+html .otp__item a[aria-current="location"] {
+  border-left-color: var(--cyan);
+}
+html .reading-progress span {
+  background: linear-gradient(90deg, var(--teal-bright), var(--cyan), var(--blue-bright));
+  box-shadow: 0 0 10px rgb(49 212 229 / 0.6);
+}
+
+/* Section numbers in chapter headings read as a teal index, the title as ink. */
+html .prose .h-num {
+  color: var(--teal);
+  font-variant-numeric: tabular-nums;
+  margin-right: 0.45em;
+  font-weight: 650;
+}
+html .prose h2 {
+  border-top: 0;
+  padding-top: 0.6em;
+  position: relative;
+}
+html .prose h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -0.4em;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--rule-strong), var(--rule) 60%, transparent);
+}
+
+/* ---------------------------------------------------------------- search palette */
+html .palette__panel {
+  border: 1px solid rgb(255 255 255 / 0.7);
+  box-shadow: var(--shadow-float), 0 0 0 1px rgb(111 175 229 / 0.25);
+}
+html .palette__bar {
+  background: linear-gradient(180deg, var(--surface), var(--paper));
+}
+html .palette__item[aria-selected="true"] {
+  background: var(--teal-wash);
+  box-shadow: inset 3px 0 0 var(--teal-bright);
+}
+html .palette__filter[aria-pressed="true"] {
+  border-radius: var(--r-pill);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-head__title,
+  .page-head__lede {
+    animation: none;
+  }
+}

@@ -1,0 +1,14 @@
+flowchart TD
+  Q["User query + verified identity"] --> R1["Stage 1: hybrid retrieval, tenant and ACL filters applied inside the search"]
+  R1 --> CUT["Cut to N candidates, N counted AFTER authorization"]
+  CUT --> TB{{"Trust boundary: candidate text leaves the retrieval tier"}}
+  TB --> RR["Stage 2: reranker, self-hosted model or external API"]
+  RR --> TR["Truncation or windowing per input limit, max over windows"]
+  TR --> SC["Relevance score per candidate"]
+  SC --> SORT["Sort by score, keep top k"]
+  SORT --> GATE{"Best score above abstention threshold calibrated on this model?"}
+  GATE -->|"no"| ABS["Abstain or ask a clarifying question"]
+  GATE -->|"yes"| ORD["Order for the prompt: strongest passages at the edges"]
+  ORD --> CTX["Context assembly (Chapter 7) and grounded generation"]
+  R1 -. "recall ceiling: a document outside the N candidates can never be recovered" .-> CUT
+  RR -. "latency grows linearly with N, record per-stage latency and N" .-> SC

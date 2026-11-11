@@ -1,0 +1,7 @@
+flowchart LR
+  C["Chunks in memory"] --> E["ChunkEmbedder: batches, section-path recipe"]
+  E -->|"embed route"| G["LLM gateway: chain, fallback, embedding-space guard"]
+  G --> V["Validate: count, dimension, finite, non-zero, stable space"]
+  V --> T["One tenant-scoped transaction: replace chunks and insert vectors"]
+  V -.->|"refused input: version failed, job dead"| F["failed"]
+  G -.->|"outage or invalid output: nothing written, job retried"| R["retry with backoff"]

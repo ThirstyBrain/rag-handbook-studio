@@ -1,0 +1,12 @@
+flowchart TD
+  S[Need the model to use specific knowledge?] -->|No: general capability| P[Prompt engineering]
+  S -->|Yes| F{Does knowledge change, need citations or per-user permissions?}
+  F -->|Yes| R{Corpus small, single-tenant, ad-hoc?}
+  R -->|Yes| LC[Long-context prompt]
+  R -->|No| G{Questions mainly corpus-wide or relational?}
+  G -->|Yes| GR[Graph RAG / hybrid with RAG]
+  G -->|No| RAG[RAG: hybrid retrieval + citations]
+  F -->|No: stable, behavioural| FT[Fine-tune]
+  RAG --> AG{Single-pass retrieval fails evaluation on multi-step questions?}
+  AG -->|Yes| AGENT[Add agentic control with budgets]
+  AG -->|No| DONE[Stay deterministic]

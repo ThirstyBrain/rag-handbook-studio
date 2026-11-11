@@ -1,0 +1,9 @@
+stateDiagram-v2
+  [*] --> Proposed: written with options and evidence gaps
+  Proposed --> Accepted: evidence gap closed, owner approves
+  Proposed --> Deprecated: abandoned before acceptance
+  Accepted --> Accepted: dated amendment appended
+  Accepted --> Superseded: new ADR names this one, this one names the new
+  Accepted --> Deprecated: decision no longer applies
+  Superseded --> [*]
+  Deprecated --> [*]

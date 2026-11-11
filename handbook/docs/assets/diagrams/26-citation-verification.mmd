@@ -1,0 +1,14 @@
+flowchart TD
+  C["Citation to check"] --> D{"DOI present?"}
+  D -->|"yes"| L["Look the DOI up in the index"]
+  L -->|"not found"| X["Fabricated: unknown DOI"]
+  L -->|"found"| M{"Title agrees with the DOI's record?"}
+  M -->|"no"| X2["Fabricated: valid DOI on a different work"]
+  M -->|"yes"| F["Compare fields: year, authors, journal, volume, pages"]
+  D -->|"no"| S["Fuzzy match title, authors and year against the index"]
+  S --> T{"Match score"}
+  T -->|"low"| X3["Fabricated: no match"]
+  T -->|"middle"| H["Ambiguous: send to a human"]
+  T -->|"high"| F
+  F --> R["Check retraction and correction notices"]
+  R --> OUT["Verified, or verified with named field errors, plus any retraction flag"]

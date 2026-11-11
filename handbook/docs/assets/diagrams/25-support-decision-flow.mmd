@@ -1,0 +1,12 @@
+flowchart TD
+  M["Customer message"] --> D["First message discloses that this is an AI assistant"]
+  D --> I["Classify intent and risk"]
+  I --> H{"High-risk intent: refund, legal, safety?"}
+  H -->|"yes"| HU["Hand off to a human with context"]
+  H -->|"no"| R["Retrieve with the customer's market and entitlement filters"]
+  R --> C{"Confidence at or above the calibrated threshold?"}
+  C -->|"no"| HU
+  C -->|"yes"| G["Draft a cited answer"]
+  G --> Q{"Every commitment quoted verbatim from a cited policy?"}
+  Q -->|"no"| HU
+  Q -->|"yes"| S["Send the answer, then check outcome signals"]

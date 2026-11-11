@@ -1,0 +1,26 @@
+flowchart TB
+  subgraph EDGE["Edge"]
+    WAF["Gateway + WAF"]
+  end
+  subgraph APP["Application tier: trusted code"]
+    API["API: validate token, derive tenant + identity, ownership checks"]
+    POL["Policy: RBAC + ABAC compiled to filters, equivalence-tested"]
+    ORCH["Orchestrator"]
+    AUD["Audit emitter"]
+  end
+  subgraph DATA["Data tier"]
+    PG[("Postgres: tenant_id, acl_groups, RLS, partitions")]
+    CACHE[("Caches keyed by tenant + permission set + version")]
+    OBJ[("Raw documents")]
+  end
+  subgraph KEYS["Keys and secrets"]
+    KV[("Key vault: platform keys, optional per-tenant keys")]
+  end
+  WAF --> API --> POL --> ORCH
+  ORCH -->|"filters + session identity"| PG
+  ORCH --> CACHE
+  API --> AUD
+  ORCH --> AUD
+  AUD --> LOG[("Append-only audit store")]
+  KV -.-> PG
+  KV -.-> OBJ

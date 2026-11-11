@@ -1,0 +1,14 @@
+flowchart TD
+  Q["User query + conversation history + identity"] --> N["Normalize: same cleaning as chunks"]
+  N --> G{"Gate: follow-up? complex? identifier-like?"}
+  G -->|"identifier-like"| RETR
+  G -->|"follow-up, needs context"| CR["Conversational rewrite: bounded history, original kept"]
+  G -->|"complex, independent parts"| DP["Decompose: parallel sub-queries"]
+  G -->|"complex, dependent parts"| IT["Iterative path (Ch. 11)"]
+  G -->|"simple"| RETR
+  CR --> RETR
+  DP --> RETR
+  EXP["Optional experiment: expansion or HyDE, down-weighted, behind a flag"] -.-> RETR
+  RETR["Hybrid retrieval: filters from identity ONLY; original query always in the set"] --> RR["Fuse, rerank, assemble (Ch. 6, 9, 12)"]
+  CR -. "timeout or error: fall back to original query" .-> RETR
+  DP -. "timeout or error: fall back to original query" .-> RETR

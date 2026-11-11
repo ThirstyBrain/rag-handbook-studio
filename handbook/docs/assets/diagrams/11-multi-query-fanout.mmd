@@ -1,0 +1,15 @@
+flowchart TD
+  Q["Query + identity"] --> V["Generate N variants, capped; original always included"]
+  V --> GATE{"Variant similar enough to original?"}
+  GATE -->|"no: drop"| DROP["Discarded variant"]
+  GATE -->|"yes"| PAR
+  Q --> PAR
+  subgraph PAR["Parallel retrieval: identity filters inside every leg"]
+    R0["Original query"]
+    R1["Variant 1"]
+    R2["Variant N"]
+  end
+  R0 --> F["Fuse: RRF, original weighted, dedupe"]
+  R1 --> F
+  R2 --> F
+  F --> RR["Rerank, assemble (Ch. 6, 12)"]

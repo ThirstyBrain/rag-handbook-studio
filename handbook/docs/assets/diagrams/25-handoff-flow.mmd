@@ -1,0 +1,12 @@
+sequenceDiagram
+  participant C as Customer
+  participant B as Bot
+  participant Q as Queue
+  participant A as Human agent
+  C->>B: Question
+  B->>B: Decide: low confidence, high-risk intent, blocked commitment, or request for a human
+  B->>C: Explain the handoff and the expected wait
+  B->>Q: Packet: conversation id, intent, cited sources, bot draft, customer identity reference
+  Q->>A: Assign by skill, priority and service level
+  A->>C: Continue without asking the customer to repeat
+  A->>B: Outcome label for evaluation

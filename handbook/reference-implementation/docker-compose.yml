@@ -1,0 +1,120 @@
+# Local development stack. No secrets live in this file: copy .env.example to .env and set values.
+#   db       PostgreSQL 16 + pgvector; first start creates the rag_owner and rag_app roles
+#   migrate  one-shot: applies database/migrations as rag_owner, then exits
+#   api      the service, connecting as the restricted rag_app role (never a superuser)
+#   worker   background jobs, connecting as rag_worker (job queue only; no access to document content)
+name: rag-reference
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: docker/postgres/Dockerfile
+    image: rag-ref-postgres:pg16-pgvector-0.8.7
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rag}
+      POSTGRES_DB: ${POSTGRES_DB:-rag}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env (URL-safe characters only)}
+      RAG_OWNER_PASSWORD: ${RAG_OWNER_PASSWORD:?set RAG_OWNER_PASSWORD in .env (URL-safe characters only)}
+      RAG_APP_PASSWORD: ${RAG_APP_PASSWORD:?set RAG_APP_PASSWORD in .env (URL-safe characters only)}
+      RAG_WORKER_PASSWORD: ${RAG_WORKER_PASSWORD:?set RAG_WORKER_PASSWORD in .env (URL-safe characters only)}
+    ports:
+      - "127.0.0.1:${POSTGRES_HOST_PORT:-5433}:5432" # loopback only
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 1g
+    pids_limit: 200
+    # Docker's default /dev/shm is 64 MB; a parallel HNSW build needs shared memory about the size of
+    # maintenance_work_mem and failed without this (Chapter 20, OI-057). Not yet verified on a recreated stack.
+    shm_size: 256m
+
+  migrate:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: rag-ref-api:dev
+    command: ["python", "-m", "rag_service.db.migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      RAG_ENVIRONMENT: ${RAG_ENVIRONMENT:-local}
+      RAG_MIGRATION_DATABASE_URL: postgresql://rag_owner:${RAG_OWNER_PASSWORD}@db:5432/${POSTGRES_DB:-rag}
+      RAG_MIGRATIONS_DIR: /app/database/migrations
+    restart: "no"
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 256m
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: rag-ref-api:dev
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      RAG_ENVIRONMENT: ${RAG_ENVIRONMENT:-local}
+      RAG_LOG_LEVEL: ${RAG_LOG_LEVEL:-INFO}
+      RAG_DATABASE_URL: postgresql://rag_app:${RAG_APP_PASSWORD}@db:5432/${POSTGRES_DB:-rag}
+      RAG_MIGRATIONS_DIR: /app/database/migrations
+      RAG_OBJECT_STORE_DIR: /data/objects
+      RAG_DEV_IDENTITY_ENABLED: ${RAG_DEV_IDENTITY_ENABLED:-false}
+    ports:
+      - "127.0.0.1:${API_HOST_PORT:-8000}:8000" # loopback only
+    volumes:
+      - objects:/data/objects
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 512m
+    pids_limit: 200
+
+  worker:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    image: rag-ref-api:dev
+    command: ["python", "-m", "rag_service.jobs.worker"]
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      RAG_ENVIRONMENT: ${RAG_ENVIRONMENT:-local}
+      RAG_LOG_LEVEL: ${RAG_LOG_LEVEL:-INFO}
+      RAG_WORKER_DATABASE_URL: postgresql://rag_worker:${RAG_WORKER_PASSWORD}@db:5432/${POSTGRES_DB:-rag}
+      RAG_OBJECT_STORE_DIR: /data/objects
+      # the parser child's address-space limit (POSIX rlimit); keep it below mem_limit so a runaway parser
+      # fails with MemoryError inside the child instead of the container's memory cgroup killing the worker
+      RAG_EXTRACT_MEMORY_MB: ${RAG_EXTRACT_MEMORY_MB:-384}
+      # Embedding needs the LLM gateway: docker-compose.llm.yml turns it on. Without it the worker ingests
+      # chunks but produces no vectors (it says so at start-up); retrieval will not find such versions.
+      RAG_EMBEDDING_ENABLED: ${RAG_EMBEDDING_ENABLED:-false}
+    volumes:
+      - objects:/data/objects
+    healthcheck:
+      disable: true # the image's HTTP health check does not apply to the worker
+    read_only: true
+    tmpfs: ["/tmp"]
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 768m
+    pids_limit: 100
+
+volumes:
+  pgdata:
+  objects:

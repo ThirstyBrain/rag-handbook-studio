@@ -1,0 +1,20 @@
+flowchart LR
+  subgraph OFF["Offline: before a change ships"]
+    G[("Golden set vN: queries, graded relevant documents, reference facts, slice tags")] --> R["Runner: executes the real pipeline as each test identity"]
+    R --> RM["Retrieval metrics: hit, Recall@K, MRR, nDCG"]
+    R --> GM["Generation metrics: faithfulness, citations, abstention"]
+    GM --> J["Validated judges"]
+    RM --> S["Per-query scores and slices"]
+    J --> S
+    S --> ST["Paired bootstrap against the baseline"]
+    ST --> GATE{"Gate: regression, inconclusive, improvement"}
+  end
+  GATE -->|"no regression"| REL["Promote the change"]
+  GATE -->|"regression"| BLOCK["Block and diagnose by slice"]
+  subgraph ON["Online: after a change ships"]
+    P["Production traffic"] --> SM["Sample: rate, stratified by slice"]
+    SM --> J2["Same judges, same prompts"]
+    J2 --> SLI["Quality SLIs and alerts (Chapter 19)"]
+    FB["User feedback and failed answers"] --> TRI["Triage and label"]
+  end
+  TRI -->|"new cases"| G

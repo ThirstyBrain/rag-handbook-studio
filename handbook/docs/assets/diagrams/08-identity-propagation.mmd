@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  participant B as Browser
+  participant A as API layer
+  participant ID as Identity provider
+  participant O as Orchestrator
+  participant S as Search / Postgres
+  participant L as LLM
+  B->>A: request + access token (aud = API)
+  A->>A: validate token, then derive immutable identity: tenant, user, groups
+  opt downstream API needs the user's identity
+    A->>ID: on-behalf-of: assertion = token, requested_token_use = on_behalf_of
+    ID-->>A: downstream token (delegated scopes only)
+  end
+  A->>O: question + identity
+  O->>S: query with tenant + ACL predicate inside each leg (and RLS session identity)
+  S-->>O: only authorized chunks
+  O->>L: evidence (authorized only) + question
+  L-->>O: answer
+  O->>O: validate citations, write audit event (ids and hashes, no raw text)
+  O-->>B: answer + citations

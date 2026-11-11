@@ -1,0 +1,12 @@
+stateDiagram-v2
+  [*] --> Received
+  Received --> Extracting
+  Extracting --> Failed: permanent error
+  Extracting --> Staged: chunks + embeddings written inactive
+  Staged --> Active: swap, old version retired
+  Active --> Superseded: newer version activated
+  Active --> Deleted: delete signal
+  Superseded --> Purged: retention elapsed
+  Deleted --> Purged: purge complete
+  Failed --> Received: replay from DLQ
+  Purged --> [*]

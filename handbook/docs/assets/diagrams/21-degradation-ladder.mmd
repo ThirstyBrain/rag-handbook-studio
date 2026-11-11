@@ -1,0 +1,8 @@
+flowchart TD
+  N["Normal: hybrid retrieval, rerank, primary model"] -->|"reranker slow or down"| D1["Skip rerank, keep fusion order"]
+  D1 -->|"embedding or vector search down"| D2["Lexical-only retrieval, ACL filters unchanged"]
+  D2 -->|"primary model down or over budget"| D3["Fallback or smaller model, shorter answers"]
+  D3 -->|"all models down"| D4["Return retrieved passages with citations, no generation"]
+  D4 -->|"retrieval unavailable"| D5["Explicit unavailable message, no guessing"]
+  SEC["Every step keeps authentication, tenant isolation and ACL filtering"] -.-> N
+  EV["Each step has an evaluated quality level and an SLO impact"] -.-> D2

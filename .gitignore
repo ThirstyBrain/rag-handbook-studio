@@ -1,0 +1,28 @@
+﻿# Dependencies / build output
+node_modules/
+dist/
+.vite/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets (keep .env.example only)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local data / artefacts
+*.log
+.DS_Store
+Thumbs.db
+.claude/
+handbook/reference-implementation/**/data/
+handbook/output/*.pdf
+handbook/research-notes/

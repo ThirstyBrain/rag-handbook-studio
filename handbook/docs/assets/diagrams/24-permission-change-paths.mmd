@@ -1,0 +1,7 @@
+flowchart TD
+  A["Content change"] --> L1["Logged on the document: upsert by version"]
+  B["Document ACL change"] --> L2["Logged on the document: re-snapshot its ACL"]
+  C["Folder ACL change"] --> L3["Logged on the folder only: re-snapshot every inheriting child"]
+  D["Group membership change"] --> L4["Logged on no document: store group principals and resolve membership at query time"]
+  E["Document deleted"] --> L5["Remove from the index and every derived store"]
+  F["Feed replays or the token expires"] --> L6["Apply idempotently; fall back to a full resync and reconcile"]

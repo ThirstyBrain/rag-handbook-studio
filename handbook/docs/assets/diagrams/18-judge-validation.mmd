@@ -1,0 +1,10 @@
+flowchart TD
+  H["Humans label a stratified calibration sample"] --> CMP["Compare judge and human labels per slice"]
+  C["Candidate judge: model, prompt and version pinned"] --> ORD["Run both answer orders for pairwise judgments"]
+  ORD --> CMP
+  CMP --> AG["Raw agreement AND chance-corrected agreement (kappa)"]
+  AG --> Q{"Good enough on every slice that matters?"}
+  Q -->|"yes"| PIN["Use it, pinned; re-check against fresh human labels on a schedule"]
+  Q -->|"no"| FIX["Change the prompt or model, or keep human labelling for that slice"]
+  FIX --> C
+  PIN --> DRIFT["A model or prompt change restarts the validation"]

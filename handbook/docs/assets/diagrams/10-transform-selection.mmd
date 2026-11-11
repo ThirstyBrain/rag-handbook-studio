@@ -1,0 +1,12 @@
+flowchart TD
+  P["Observed retrieval failure"] --> A{"Relevant document uses different words than the query?"}
+  A -->|"yes: stable vocabulary gap"| B["Glossary / synonym expansion: deterministic"]
+  A -->|"yes: open-ended gap"| C["LLM expansion or HyDE: experiment, gated, down-weighted"]
+  A -->|"no"| D{"Follow-up turn with missing context?"}
+  D -->|"yes"| E["Conversational rewrite, only when needed"]
+  D -->|"no"| F{"Several intents in one question?"}
+  F -->|"yes, independent"| G["Decompose, retrieve in parallel"]
+  F -->|"yes, dependent"| H["Iterative multi-hop (Ch. 11)"]
+  F -->|"no"| I{"Identifier or exact term missed?"}
+  I -->|"yes"| J["Analyzer / identifier field / hybrid (Ch. 9), NOT rewriting"]
+  I -->|"no"| K["Check chunking, embeddings, reranking (Ch. 4, 2, 12)"]

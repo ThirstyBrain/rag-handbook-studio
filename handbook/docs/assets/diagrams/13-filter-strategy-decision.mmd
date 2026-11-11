@@ -1,0 +1,15 @@
+flowchart TD
+  S["Filtered nearest-neighbour query"] --> Q1{"Does one filter value dominate your traffic, such as a tenant?"}
+  Q1 -->|"yes, few large values"| P1["Partition or per-value index: tenant-local HNSW, planner prunes partitions"]
+  Q1 -->|"no, many values"| Q2{"Typical selectivity of the filter?"}
+  Q2 -->|"below about 1 percent"| P2["Let the planner use a btree or GIN index and scan the few matching rows exactly"]
+  Q2 -->|"1 to 50 percent"| P3["ANN index with iterative scan, raise ef_search, verify results returned equals k"]
+  Q2 -->|"above 50 percent"| P4["Plain ANN index is usually enough, still measure recall"]
+  P2 --> W{"Parameterised or prepared statements?"}
+  P3 --> W
+  W -->|"yes"| P5["Check the plan type used: force custom plans for filtered kNN, or avoid a generic plan"]
+  W -->|"no, literals"| OK["Custom plan sees the value, selectivity estimate is used"]
+  P1 --> M["Monitor: results returned per query, recall against exact on a sample, plan type"]
+  P5 --> M
+  OK --> M
+  P4 --> M

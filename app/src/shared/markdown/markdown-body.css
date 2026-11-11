@@ -1,0 +1,7 @@
+.diagram[data-state="error"]::before {
+  content: "This diagram could not be rendered; its Mermaid source is shown instead.";
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--amber);
+  margin-bottom: 8px;
+}

@@ -1,0 +1,35 @@
+[project]
+name = "rag-service"
+version = "0.1.0"
+description = "Reference implementation backend for the Production-Grade RAG Architecture Handbook"
+requires-python = ">=3.12"
+# Runtime and dev dependencies are pinned in requirements.txt / requirements-dev.txt (see DEPENDENCIES.md).
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "../tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "ASYNC", "SIM", "RUF"]
+ignore = [
+  "S101",  # assert is the pytest idiom; production code does not use assert for control flow
+  "E501",  # `ruff format` wraps code; remaining long lines are prose in docstrings and comments
+]
+
+[tool.ruff.lint.per-file-ignores]
+"../tests/**" = ["S105", "S106"]  # test fixtures contain fake passwords by design
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+mypy_path = "src"
+packages = ["rag_service"]
+
+[tool.pytest.ini_options]
+testpaths = ["../tests"]
+pythonpath = ["src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = ["integration: needs a running PostgreSQL (set RAG_TEST_DATABASE_URL)"]
+addopts = "-ra --strict-markers"

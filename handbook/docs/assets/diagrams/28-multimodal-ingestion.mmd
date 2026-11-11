@@ -1,0 +1,14 @@
+flowchart TD
+  D["Document, image, audio or video"] --> X["Sandboxed extraction: layout, tables, figures, pages, timestamps"]
+  X --> T["Text and structured tables"]
+  X --> I["Figures and page images"]
+  X --> A["Transcript segments with times"]
+  I --> V["Verbalise at ingestion: description with provenance label"]
+  I --> E["Direct image or page embeddings"]
+  A --> G["Guard: flag text in silent spans"]
+  T --> L["Link captions and references"]
+  V --> L
+  L --> C["Chunks with page, region or time locators"]
+  G --> C
+  E --> C
+  C --> IDX[("Index: text, descriptions, vectors, locators, ACL")]

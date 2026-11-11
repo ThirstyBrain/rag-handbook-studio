@@ -1,0 +1,10 @@
+flowchart TD
+  S["Question + identity + budgets: time, tokens, hops"] --> H1["Hop: retrieve with identity filters"]
+  H1 --> LOG["Append to evidence chain: hop, query, ids, versions"]
+  LOG --> NEW{"Any new evidence vs. visited set?"}
+  NEW -->|"no"| STOPN["Stop: no_new_evidence"]
+  NEW -->|"yes"| READ["Reader decides: sufficient?"]
+  READ -->|"yes"| ANS["Stop: answer_found, cite evidence chain"]
+  READ -->|"no: next query from bridge entity"| BUD{"Within budget and hop cap?"}
+  BUD -->|"no"| STOPB["Stop: budget or max_hops, return partial + truncated flag"]
+  BUD -->|"yes"| H1

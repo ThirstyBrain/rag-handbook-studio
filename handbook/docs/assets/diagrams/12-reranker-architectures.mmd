@@ -1,0 +1,24 @@
+flowchart LR
+  subgraph BI["Bi-encoder (dense retrieval)"]
+    direction TB
+    BQ["Query"] --> BEQ["Encoder"] --> BVQ["1 query vector"]
+    BD["Document"] --> BED["Encoder, OFFLINE"] --> BVD["1 stored vector per chunk"]
+    BVQ --> BS["Similarity: dot or cosine"]
+    BVD --> BS
+  end
+  subgraph LI["Late interaction (ColBERT-style)"]
+    direction TB
+    LQ["Query"] --> LEQ["Encoder"] --> LVQ["Many query token vectors"]
+    LD["Document"] --> LED["Encoder, OFFLINE"] --> LVD["Many stored token vectors per chunk"]
+    LVQ --> LS["Token-level MaxSim, then sum"]
+    LVD --> LS
+  end
+  subgraph CE["Cross-encoder (reranker)"]
+    direction TB
+    CQ["Query"] --> CJ["Query + document concatenated"]
+    CD["Candidate document"] --> CJ
+    CJ --> CM["Full transformer pass, ONLINE, per pair"] --> CS["One relevance score"]
+  end
+  BS -. "cheapest per query, precomputed documents, coarsest interaction" .-> NOTE["Cost and fidelity move together: left to right, interaction gets finer and per-query work grows"]
+  LS -.-> NOTE
+  CS -. "finest interaction, nothing precomputable per pair, so only run on a short candidate list" .-> NOTE
