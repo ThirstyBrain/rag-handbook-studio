@@ -3,11 +3,15 @@ import { EVIDENCE_LABELS, EVIDENCE_SHORT } from "@/content/parse/evidence";
 import type { Chapter, EvidenceKind } from "@/content/types";
 import { Link } from "@/shared/router/router";
 import { firstSentence } from "@/content/parse/text";
+import { contentDates, formatDate } from "@/seo/dates";
+import { chapterTldr } from "@/seo/text";
 
 const ORDER: EvidenceKind[] = ["X", "S", "E", "V", "I", "A", "N"];
 
 export function ChapterHeader({ chapter }: { chapter: Chapter }) {
   const part = getHandbook().parts.find((p) => p.id === chapter.partId);
+  const tldr = chapterTldr(chapter);
+  const updated = contentDates(chapter.sourcePath)?.modified;
   const total = ORDER.reduce((s, k) => s + (chapter.evidence[k] ?? 0), 0);
 
   return (
@@ -39,6 +43,17 @@ export function ChapterHeader({ chapter }: { chapter: Chapter }) {
         </p>
       )}
       {chapter.problem && <p className="ch-head__lede">{firstSentence(chapter.problem)}</p>}
+
+      {tldr && (
+        <p className="ch-head__tldr">
+          <strong>In short:</strong> {tldr}
+        </p>
+      )}
+      {updated && (
+        <p className="ch-head__updated">
+          Last updated <time dateTime={updated}>{formatDate(updated)}</time>
+        </p>
+      )}
 
       <dl className="ch-head__facts">
         <div>

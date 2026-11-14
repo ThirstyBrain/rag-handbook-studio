@@ -19,18 +19,19 @@ export function Footer() {
         </div>
         <nav className="site-footer__cols" aria-label="Footer">
           <div>
-            <h2>Read</h2>
+            <p className="site-footer__cols-title">Read</p>
             <Link href="/handbook">Contents</Link>
             <Link href={`/handbook/${hb.chapters[0]?.slug ?? ""}`}>Chapter 1</Link>
             <Link href="/glossary">Glossary</Link>
             <Link href="/references">References</Link>
           </div>
           <div>
-            <h2>Explore</h2>
+            <p className="site-footer__cols-title">Explore</p>
             <Link href="/architecture">Architecture map</Link>
             <Link href="/lab">Retrieval lab</Link>
             <Link href="/exercises">Exercises</Link>
             <Link href="/decisions">Decisions</Link>
+            <Link href="/about">About</Link>
           </div>
         </nav>
       </div>

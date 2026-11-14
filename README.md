@@ -20,10 +20,16 @@ Node 20+ is required. Python 3.11+ is only needed to re-capture exercise output 
 
 ## Deploy
 
-The app is a static SPA (History API routing, so every path must fall back to `index.html`). The build must see the whole repo because it imports `../handbook`.
+The app is a static site. `npm run build` type-checks, bundles, then **prerenders every route to static HTML** (`app/scripts/prerender.mjs`) so crawlers and AI tools get real content without running JavaScript. It also writes `404.html`, `sitemap.xml`, `robots.txt` and `llms.txt`. There is deliberately no catch-all rewrite: unknown URLs return a true 404. The build must see the whole repo because it imports `../handbook`.
 
 - **Netlify:** import the repo; `netlify.toml` at the root configures everything.
-- **Vercel:** import the repo, set *Root Directory* to `app`, and keep "Include files outside the Root Directory" enabled. `app/vercel.json` does the rest.
+- **Vercel:** import the repo, set *Root Directory* to `app`, and keep "Include files outside the Root Directory" enabled.
+
+The canonical site origin is `SITE_URL`, else Netlify's `URL` variable, else `DEFAULT_SITE_URL` in `app/src/seo/siteConfig.ts`. Set `SITE_URL` when you add a custom domain.
+
+## SEO and AEO
+
+All of it lives in `app/src/seo`: per-page titles, descriptions, canonicals, Open Graph/Twitter tags and JSON-LD (TechArticle, BreadcrumbList, FAQPage from each chapter's interview questions, DefinedTermSet for the glossary). "Last updated" dates come from git history. To get a social preview image, add a 1200x630 `app/public/og-image.png`; the build picks it up automatically.
 
 ## Known issues
 

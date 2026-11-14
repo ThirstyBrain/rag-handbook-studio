@@ -2,6 +2,7 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { readContentDates } from "./vite-plugins/contentDates";
 import { handbookImages } from "./vite-plugins/handbookImages";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -10,6 +11,8 @@ export const HANDBOOK_DIR = path.resolve(root, "../handbook");
 
 export default defineConfig({
   plugins: [react(), handbookImages(HANDBOOK_DIR)],
+  // Page dates come from git history, so "last updated" is never invented.
+  define: { __CONTENT_DATES__: JSON.stringify(readContentDates(HANDBOOK_DIR)) },
   resolve: {
     alias: {
       "@": path.resolve(root, "src"),

@@ -49,7 +49,7 @@ export function HandbookPreview() {
         <div className="preview__body">
           <div className="preview__copy">
             <p className="preview__kicker">Chapter 9</p>
-            <h2 className="preview__title">Hybrid Retrieval Running in This Page</h2>
+            <p className="preview__title">Hybrid Retrieval Running in This Page</p>
             <p className="preview__text">Dense retrieval matches meaning; lexical retrieval matches terms. Reciprocal rank fusion combines both rankings without comparing their scores.</p>
             {code && (
               <pre className="preview__code" aria-label={`Excerpt of rrf() from ${SOURCE_FILE}`}>

@@ -3,7 +3,4 @@
   command = "npm ci && npm run build"
   publish = "dist"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# No catch-all rewrite: every route is prerendered, and unknown URLs get dist/404.html with a real 404 status.

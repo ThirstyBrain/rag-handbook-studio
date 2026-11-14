@@ -2,6 +2,8 @@ import { Suspense, useEffect } from "react";
 import { track } from "@/shared/analytics/track";
 import { RouterProvider, useRouter } from "@/shared/router/router";
 import { Loading } from "@/shared/ui/States";
+import { applyPageMeta } from "@/seo/head";
+import { getPageMeta, NOT_FOUND_META } from "@/seo/pageMeta";
 import { SearchProvider } from "@/features/search/SearchProvider";
 import { ErrorBoundary } from "./ErrorBoundary";
 import { Footer } from "./Footer";
@@ -10,8 +12,6 @@ import { NotFound } from "./NotFound";
 import { resolveRoute } from "./routes";
 import { useScrollRestoration } from "./useScrollRestoration";
 
-const SITE = "RAG Architecture Handbook";
-
 function CurrentRoute() {
   const { location } = useRouter();
   const match = resolveRoute(location.path);
@@ -19,9 +19,8 @@ function CurrentRoute() {
 
   useEffect(() => {
     track({ name: "page_view", path: location.path });
-    const t = match?.route.title(match.params);
-    if (t !== "") document.title = t ? `${t} — ${SITE}` : SITE;
-  }, [location.path, match]);
+    applyPageMeta(getPageMeta(location.path) ?? NOT_FOUND_META, window.location.origin);
+  }, [location.path]);
 
   if (!match) return <NotFound />;
   const Page = match.route.component;

@@ -146,6 +146,21 @@
   color: var(--muted);
   max-width: 54ch;
 }
+.ch-head__tldr {
+  margin-top: var(--s-4);
+  padding: var(--s-3) var(--s-4);
+  border-left: 3px solid var(--ink);
+  background: var(--paper-2, rgba(0, 0, 0, 0.03));
+  font-size: var(--fs-base, 1rem);
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+.ch-head__updated {
+  margin-top: var(--s-3);
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
 .ch-head__facts {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

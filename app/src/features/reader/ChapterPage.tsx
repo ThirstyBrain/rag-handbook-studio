@@ -40,10 +40,6 @@ function Reader({ chapter }: { chapter: Chapter }) {
   const next = hb.chapters[index + 1];
 
   useEffect(() => {
-    document.title = `${chapter.number}. ${chapter.title} — RAG Architecture Handbook`;
-  }, [chapter]);
-
-  useEffect(() => {
     if (progress >= 0.98 && markCompleted(chapter.number)) track({ name: "chapter_completed", chapter: chapter.number });
   }, [progress, chapter.number]);
 

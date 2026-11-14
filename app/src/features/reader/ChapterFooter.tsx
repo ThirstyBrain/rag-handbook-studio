@@ -1,6 +1,7 @@
 import { findAdr, getHandbook } from "@/content/handbook";
 import type { Chapter } from "@/content/types";
 import { Link } from "@/shared/router/router";
+import { PUBLISHER, REPO_URL } from "@/seo/siteConfig";
 import { relatedChapters } from "./related";
 
 export function ChapterFooter({ chapter, prev, next }: { chapter: Chapter; prev?: Chapter; next?: Chapter }) {
@@ -66,6 +67,13 @@ export function ChapterFooter({ chapter, prev, next }: { chapter: Chapter; prev?
           </section>
         )}
       </div>
+      <p className="ch-foot__source">
+        Written and maintained by{" "}
+        <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+          {PUBLISHER.name}
+        </a>
+        . <Link href="/about">How claims are verified, and how to report an error.</Link>
+      </p>
       <p className="ch-foot__source">
         Rendered from <code>{chapter.sourcePath}</code>.{" "}
         {chapter.status === "complete" && chapter.statusNote && <>Marked complete in the handbook, {chapter.statusNote}.</>}

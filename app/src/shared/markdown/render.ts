@@ -151,6 +151,12 @@ export function renderMarkdown(md: string, ctx: RenderContext = {}): RenderResul
         if (href.startsWith("#")) return `<a href="${escapeHtml(href)}"${t}>${inner}</a>`;
         return `<span class="repo-link" title="Repository file: ${escapeHtml(href)}">${inner}</span>`;
       },
+      image({ href, title, text }: Tokens.Image) {
+        // Chapters link figures as "../assets/images/…". Root-absolute keeps them working on any route depth, trailing slash included.
+        const src = href.replace(/^(?:\.\.\/)+assets\/images\//, "/assets/images/");
+        const t = title ? ` title="${escapeHtml(title)}"` : "";
+        return `<img src="${escapeHtml(src)}" alt="${escapeHtml(text)}"${t} loading="lazy" decoding="async">`;
+      },
       codespan({ text }: Tokens.Codespan) {
         const ex = /(?:docs\/exercises\/)?(ch\d+_[a-z0-9_]+\.py)/.exec(text);
         if (ex && ctx.exercises?.has(ex[1]!)) {
