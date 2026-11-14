@@ -30,6 +30,7 @@ export function Footer() {
             <Link href="/architecture">Architecture map</Link>
             <Link href="/lab">Retrieval lab</Link>
             <Link href="/exercises">Exercises</Link>
+            <Link href="/interview-questions">Interview questions</Link>
             <Link href="/decisions">Decisions</Link>
             <Link href="/about">About</Link>
           </div>

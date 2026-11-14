@@ -70,10 +70,11 @@ npm run dev        # http://localhost:5180
 | `npm run preview` | Serve the production build locally |
 | `npm run check` | Type-check, lint, test and build |
 | `npm run exercises` | Re-run the handbook exercises and record their output |
+| `npm run dates` | Record chapter and ADR "last updated" dates after you edit the handbook (commit `app/content-dates.json`) |
 
 ## How it is built
 
-The site is fully static. `npm run build` bundles the app, then `app/scripts/prerender.mjs` writes one HTML file per route with its own title, description, canonical link, Open Graph tags and JSON-LD (TechArticle, BreadcrumbList, FAQPage, DefinedTermSet). It also generates `sitemap.xml`, `robots.txt`, `llms.txt` and a `404.html`. Unknown URLs return a real 404. Page dates are taken from git history rather than invented.
+The site is fully static. `npm run build` bundles the app, then `app/scripts/prerender.mjs` writes one HTML file per route with its own title, description, canonical link, Open Graph tags and JSON-LD (TechArticle, BreadcrumbList, FAQPage, DefinedTermSet). It also generates `sitemap.xml`, `robots.txt`, `llms.txt` and a `404.html`. Unknown URLs return a real 404. Each page also gets a generated 1200×630 social card in `dist/og/`. "Last updated" dates come from `app/content-dates.json`, recorded from real file timestamps and superseded by git history once a chapter's text changes, so a date never moves unless the content does.
 
 Design notes and audits live in [`app/docs/`](app/docs): implementation plan, design system, and validation report.
 
@@ -84,7 +85,9 @@ Hosted on Netlify, deployed from `main`. [`netlify.toml`](netlify.toml) sets the
 - **Netlify:** import the repository; no further settings are needed.
 - **Vercel:** set the Root Directory to `app` and keep "Include files outside the Root Directory" enabled.
 
-The canonical origin comes from `SITE_URL`, then Netlify's `URL` variable, then the default in `app/src/seo/siteConfig.ts`. Set `SITE_URL` if you move to a custom domain.
+The canonical origin comes from `SITE_URL`, then Netlify's `URL` variable, then the default in `app/src/seo/siteConfig.ts`. Set `SITE_URL` if you move to a custom domain. Set `PLAUSIBLE_DOMAIN` to add privacy-friendly analytics; nothing is added by default.
+
+The author byline and structured data come from `AUTHOR` in `app/src/seo/siteConfig.ts`; add `bio` and `sameAs` profile links (for example LinkedIn) there.
 
 ## Status and known issues
 

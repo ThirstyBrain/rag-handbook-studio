@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "exercises": "node scripts/capture-exercises.mjs",
+    "dates": "node scripts/record-content-dates.mjs",
     "build": "tsc --noEmit && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",

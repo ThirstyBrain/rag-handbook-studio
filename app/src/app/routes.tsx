@@ -22,6 +22,7 @@ export const ROUTES: RouteDef[] = [
   { pattern: "/decisions/:id", component: page(() => import("@/features/decisions/DecisionsPage")) },
   { pattern: "/glossary", component: page(() => import("@/features/glossary/GlossaryPage")) },
   { pattern: "/references", component: page(() => import("@/features/references/ReferencesPage")) },
+  { pattern: "/interview-questions", component: page(() => import("@/features/interview/InterviewPage")) },
   { pattern: "/about", component: page(() => import("@/features/about/AboutPage")) },
 ];
 

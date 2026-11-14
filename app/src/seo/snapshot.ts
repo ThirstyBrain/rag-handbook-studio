@@ -4,12 +4,15 @@ import { toPlainText } from "@/content/parse/text";
 import type { Chapter } from "@/content/types";
 import { STAGES } from "@/features/architecture/stages";
 import { aboutSections } from "@/features/about/aboutContent";
+import { interviewGroups } from "@/features/interview/interviewData";
+import { CORPUS, QRELS, SOURCE_FILE } from "@/features/playground/domain/corpus";
+import { HONESTY, HOW_TO_READ, METHODS } from "@/features/playground/labContent";
 import { escapeHtml } from "@/shared/markdown/highlight";
 import { renderMarkdown } from "@/shared/markdown/render";
 import { matchPath } from "@/shared/router/router";
 import { contentDates, formatDate } from "./dates";
 import { chapterTldr, stripEvidence } from "./text";
-import { SITE_DEFINITION, SITE_NAME, SITE_SUBTITLE } from "./siteConfig";
+import { AUTHOR, SITE_DEFINITION, SITE_NAME, SITE_SUBTITLE } from "./siteConfig";
 
 /**
  * Static, crawlable HTML for each route. It is written into #root at build time so search and AI
@@ -39,6 +42,7 @@ function siteNav(): string {
     ["/architecture", "Architecture map"],
     ["/lab", "Retrieval lab"],
     ["/exercises", "Exercises"],
+    ["/interview-questions", "Interview questions"],
     ["/decisions", "Decisions"],
     ["/glossary", "Glossary"],
     ["/references", "References"],
@@ -100,7 +104,7 @@ function chapterPage(c: Chapter): string {
     crumbs([{ href: "/handbook", text: "Handbook" }, ...(part ? [{ href: `/handbook#${part.id}`, text: `Part ${part.roman}: ${part.title}` }] : []), { text: c.title }]) +
     `<article><h1>${e(c.title)}</h1>` +
     (tldr ? `<p><strong>In short:</strong> ${e(tldr)}</p>` : "") +
-    `<p>${c.readingMinutes} min read${dates ? `. Last updated <time datetime="${e(dates.modified)}">${e(formatDate(dates.modified))}</time>` : ""}.</p>` +
+    `<p>By ${link(AUTHOR.url, AUTHOR.name)}. ${c.readingMinutes} min read${dates ? `. Last updated <time datetime="${e(dates.modified)}">${e(formatDate(dates.modified))}</time>` : ""}.</p>` +
     objectives +
     renderBody(c.markdown) +
     `</article><nav aria-label="Previous and next chapter">${prev ? `<p>Previous: ${link(chapterHref(prev), prev.title)}</p>` : ""}${next ? `<p>Next: ${link(chapterHref(next), next.title)}</p>` : ""}</nav>`
@@ -152,7 +156,27 @@ function architecture(): string {
 }
 
 function lab(): string {
-  return `<h1>Retrieval lab</h1><p>A toy hybrid retrieval pipeline that runs in your browser: BM25 for keyword matching, a trigram stand-in for vector similarity, reciprocal rank fusion and min-max fusion to combine them, per-term score explanations and nDCG@3. It ports the chapter 9 exercise and needs JavaScript.</p>`;
+  const corpus = Object.entries(CORPUS).map(([id, text]) => `<li>${e(id)}: ${e(text)}</li>`).join("");
+  const methods = METHODS.map((m) => `<dt>${e(m.label)}</dt><dd>${e(m.explain)}</dd>`).join("");
+  const chapter9 = findChapter(9);
+  return (
+    `<h1>Retrieval lab</h1><p>A toy hybrid retrieval pipeline that runs in your browser. It ports the chapter 9 exercise: BM25 for keyword matching, a trigram stand-in for vector similarity, reciprocal rank fusion and min-max fusion to combine them, per-term score explanations and nDCG@3. Interactive controls need JavaScript.</p>` +
+    `<h2>The four methods</h2><dl>${methods}</dl>` +
+    `<h2>How to read the results</h2>${HOW_TO_READ.map((p) => `<p>${e(p)}</p>`).join("")}` +
+    `<h2>Example questions</h2><ul>${Object.keys(QRELS).map((q) => `<li>${e(q)}</li>`).join("")}</ul>` +
+    `<h2>The corpus</h2><ol>${corpus}</ol>` +
+    `<h2>What this is, and is not</h2><p>${e(HONESTY.before)} <code>${e(SOURCE_FILE)}</code> ${e(HONESTY.after)}</p>` +
+    (chapter9 ? `<p>${link(chapterHref(chapter9), "Read Chapter 9, Hybrid Search")}. ${link("/exercises#ch09_hybrid_search", "See the script and its output")}.</p>` : "")
+  );
+}
+
+function interview(): string {
+  const groups = interviewGroups();
+  const total = groups.reduce((sum, g) => sum + g.items.length, 0);
+  const sections = groups
+    .map(({ chapter, items }) => `<section id="${e(chapter.slug)}"><h2>${link(chapterHref(chapter), `Chapter ${chapter.number}: ${chapter.title}`)}</h2>${items.map((i) => `<h3>${e(i.question)}</h3><p>${e(i.answer)}</p>`).join("")}</section>`)
+    .join("");
+  return `<h1>RAG interview questions</h1><p>${total} questions with concise model answers from ${groups.length} chapters.</p>${sections}`;
 }
 
 function about(): string {
@@ -179,6 +203,7 @@ export function renderSnapshot(path: string): string {
   else if (path === "/exercises") main = exercises();
   else if (path === "/architecture") main = architecture();
   else if (path === "/lab") main = lab();
+  else if (path === "/interview-questions") main = interview();
   else if (path === "/about") main = about();
   if (main === null) return "";
   return `<div data-seo-snapshot>${siteNav()}<main>${main}</main>${chapterNav()}</div>`;

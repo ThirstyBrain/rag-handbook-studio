@@ -1,0 +1,262 @@
+{
+  "docs/chapters/01-traditional-llm-vs-rag.md": {
+    "published": "2026-11-07T14:24:17.155Z",
+    "modified": "2026-11-10T12:51:41.730Z",
+    "sha256": "bf028da8db4dd2d70652379a009429978993a7df1a160ba8fae299b71ae8f67e"
+  },
+  "docs/chapters/02-rag-internals.md": {
+    "published": "2026-11-07T13:53:37.758Z",
+    "modified": "2026-11-10T12:51:26.734Z",
+    "sha256": "40807815a13a18ffbd132aee007c6c808c07be945278946255cd505f3b42f710"
+  },
+  "docs/chapters/03-document-ingestion-and-processing.md": {
+    "published": "2026-11-07T16:02:23.580Z",
+    "modified": "2026-11-10T12:51:26.735Z",
+    "sha256": "4046748df46e760def45b925072b6e84c57d1c72b70c70e00ab011ed4dafe98b"
+  },
+  "docs/chapters/04-text-chunking-strategies.md": {
+    "published": "2026-11-07T14:23:07.105Z",
+    "modified": "2026-11-10T12:51:26.736Z",
+    "sha256": "65e7258e9f0bef427d68662808ef19ee2472ca45ef24dc5ab9fd6b4e955666e0"
+  },
+  "docs/chapters/05-embeddings-and-vector-databases.md": {
+    "published": "2026-11-07T15:59:44.033Z",
+    "modified": "2026-11-10T12:51:26.738Z",
+    "sha256": "627e1601554a327ca26a629f3fe0b844fb580e84cfb217dac83371875a310fe3"
+  },
+  "docs/chapters/06-retrieval-mechanisms-and-workflows.md": {
+    "published": "2026-11-07T15:29:59.470Z",
+    "modified": "2026-11-10T12:51:26.739Z",
+    "sha256": "7ec85c33db365cee177b4c4b22e911e4eb6bf7c115edfa2daa06b8ca40fd73a4"
+  },
+  "docs/chapters/07-rag-architecture-and-core-components.md": {
+    "published": "2026-11-07T15:14:01.604Z",
+    "modified": "2026-11-10T12:51:26.740Z",
+    "sha256": "fec843cfe18b1f7e6d07632cb4449a4846a33103bac54b11b91a67770504bdba"
+  },
+  "docs/chapters/08-enterprise-rag-architecture.md": {
+    "published": "2026-11-07T16:00:00.115Z",
+    "modified": "2026-11-10T12:51:26.741Z",
+    "sha256": "caf5314c27ce4ea6eff1a4ed51a5c00354c2f363be0f2f352c0f9691bcc23fc0"
+  },
+  "docs/chapters/09-hybrid-search.md": {
+    "published": "2026-11-07T16:00:33.130Z",
+    "modified": "2026-11-10T12:51:26.742Z",
+    "sha256": "c66da790c78f280c3411768944c43cdf4457ee41e422012d1ab5373412b7a4df"
+  },
+  "docs/chapters/10-query-expansion-and-rewriting.md": {
+    "published": "2026-11-07T16:15:26.458Z",
+    "modified": "2026-11-10T12:51:26.743Z",
+    "sha256": "505ede577d2b033528307c67d52123e12eb1a28935d08e5791f9e2db87a5263e"
+  },
+  "docs/chapters/11-multi-query-and-multi-hop-retrieval.md": {
+    "published": "2026-11-07T16:15:27.279Z",
+    "modified": "2026-11-10T12:51:26.744Z",
+    "sha256": "5f4235c58f2e30300d7292b220cba4742721778398783d868b15ad6cfe1ebf0e"
+  },
+  "docs/chapters/12-re-ranking-techniques.md": {
+    "published": "2026-11-08T13:29:29.365Z",
+    "modified": "2026-11-10T12:51:26.746Z",
+    "sha256": "1dd02acb58fc5937c56a08681f377ae39ab96b0e55799b00a3c4ce98581d6410"
+  },
+  "docs/chapters/13-metadata-filtering.md": {
+    "published": "2026-11-08T13:29:31.788Z",
+    "modified": "2026-11-10T12:51:26.747Z",
+    "sha256": "dc44bf1fb63f02796a8a1f39a44619f101f355c2ec97a45d96f8bf67ea7fc1db"
+  },
+  "docs/chapters/14-parent-child-and-hierarchical-retrieval.md": {
+    "published": "2026-11-08T13:57:28.937Z",
+    "modified": "2026-11-10T12:51:26.749Z",
+    "sha256": "7ce22423f67f86d5c9b1d445db1a8386cee60fa13747e67032cf9e9f0f311651"
+  },
+  "docs/chapters/15-agentic-rag-and-tool-usage.md": {
+    "published": "2026-11-08T13:59:06.725Z",
+    "modified": "2026-11-10T12:51:26.750Z",
+    "sha256": "bb29a6275fc4d7cafbc38944e416566684367e65b36b8a48dacb6fdb201ad34c"
+  },
+  "docs/chapters/16-build-a-complete-enterprise-rag-application.md": {
+    "published": "2026-11-09T13:33:06.176Z",
+    "modified": "2026-11-10T12:51:26.753Z",
+    "sha256": "94b99270b1dccc98c53c3ee7dfc685fc486c413607c948612a307d8582fb8cae"
+  },
+  "docs/chapters/17-production-grade-code-implementation.md": {
+    "published": "2026-11-09T07:57:33.043Z",
+    "modified": "2026-11-10T12:51:26.754Z",
+    "sha256": "5a2a8a838bebef5a5af96dd4c276b9d4d6fafdce0eb3a41ce32bc2c7977ea1a5"
+  },
+  "docs/chapters/18-rag-evaluation.md": {
+    "published": "2026-11-09T14:02:51.928Z",
+    "modified": "2026-11-10T12:51:26.755Z",
+    "sha256": "7fd06dccd1ea7b85c7c13ef0723d94f47347c5b2051706f990ee6f5cbf4f6bc2"
+  },
+  "docs/chapters/19-monitoring-and-llmops.md": {
+    "published": "2026-11-09T14:05:20.895Z",
+    "modified": "2026-11-10T12:51:26.757Z",
+    "sha256": "610752dd1277dc6f991eeda5256b9b3049477d03a02611e99b7eabde8ec16a6a"
+  },
+  "docs/chapters/20-performance-and-cost-optimization.md": {
+    "published": "2026-11-09T14:28:13.249Z",
+    "modified": "2026-11-10T12:51:26.758Z",
+    "sha256": "f2810f90571311c33dbe0c15b9f2d41c74aacf5cc52d7860b18c5a5b07e5503f"
+  },
+  "docs/chapters/21-reliability-and-production-failure-modes.md": {
+    "published": "2026-11-09T14:30:19.608Z",
+    "modified": "2026-11-10T12:51:26.760Z",
+    "sha256": "3af06926c709afbf1b9e16c79100eb62bf79d46f986551f9fb824103c7789e4b"
+  },
+  "docs/chapters/22-rag-security-architecture.md": {
+    "published": "2026-11-09T14:49:51.575Z",
+    "modified": "2026-11-10T12:51:26.761Z",
+    "sha256": "911852df4431a67b0baf8790fda9a5a352aa987f0faacfe98569cef18cdb2d65"
+  },
+  "docs/chapters/23-enterprise-ai-governance.md": {
+    "published": "2026-11-09T14:52:16.275Z",
+    "modified": "2026-11-10T12:51:26.762Z",
+    "sha256": "4d41bd267b1e7c5dd4dfef3a083a0cf4b7aae0cdca38cdd24df6c337fa3ce06d"
+  },
+  "docs/chapters/24-enterprise-knowledge-management.md": {
+    "published": "2026-11-09T15:08:39.269Z",
+    "modified": "2026-11-10T12:51:26.763Z",
+    "sha256": "ef99901eea5de74196a861470598d2248e49c0bb1f15f1a5a4f25ec4c31253e0"
+  },
+  "docs/chapters/25-customer-support-and-ai-chatbots.md": {
+    "published": "2026-11-09T15:10:26.061Z",
+    "modified": "2026-11-10T12:51:26.766Z",
+    "sha256": "0e5d8b5e1cb679eed7a8b6da81171edb49a87c0c34acafd4e773302a41e5b2e5"
+  },
+  "docs/chapters/26-research-and-academic-assistance.md": {
+    "published": "2026-11-09T15:46:02.776Z",
+    "modified": "2026-11-10T12:51:26.768Z",
+    "sha256": "ed6a4946177712bb5131b1db740ff8f100131a8f1bcf5d9b4d77cc691b29c6de"
+  },
+  "docs/chapters/27-code-and-developer-assistance.md": {
+    "published": "2026-11-09T15:47:30.160Z",
+    "modified": "2026-11-10T12:51:26.769Z",
+    "sha256": "002e23c4b7a61a7787a79ae14d887315781c7c82ea864e412130c8946407322f"
+  },
+  "docs/chapters/28-multimodal-rag.md": {
+    "published": "2026-11-09T16:28:18.039Z",
+    "modified": "2026-11-10T12:51:26.770Z",
+    "sha256": "1d972c3866b280fba86ccb800652c1f2411821765c23caa32ca50783a718c11b"
+  },
+  "docs/chapters/29-business-intelligence-and-analytics.md": {
+    "published": "2026-11-09T16:30:04.985Z",
+    "modified": "2026-11-10T12:51:26.772Z",
+    "sha256": "122124e73aab23bc9f4ac4de5f14997372b390c4bf2d2123782f70d761c89a96"
+  },
+  "docs/chapters/30-rag-architecture-patterns.md": {
+    "published": "2026-11-10T05:07:09.096Z",
+    "modified": "2026-11-10T12:51:26.774Z",
+    "sha256": "4e58134f2f910b1424b2498af04b2f7e489651fecf3a1bed683ce099bf146b1f"
+  },
+  "docs/chapters/31-architecture-decision-records.md": {
+    "published": "2026-11-10T05:08:56.019Z",
+    "modified": "2026-11-10T12:51:26.775Z",
+    "sha256": "d124c9c6f1446789e0e1945363ebad59f217f9c9348afafd7f6e17117bab7e3b"
+  },
+  "docs/chapters/32-system-design-interview-preparation.md": {
+    "published": "2026-11-10T05:49:29.012Z",
+    "modified": "2026-11-10T05:49:29.014Z",
+    "sha256": "c7fd4e325adfdcec1862b0b471d5c3ecd28dc1f5b03fde767b3e14b3470cff01"
+  },
+  "docs/chapters/33-advanced-interview-question-bank.md": {
+    "published": "2026-11-10T05:52:03.909Z",
+    "modified": "2026-11-10T05:52:03.910Z",
+    "sha256": "83b90330b99c300abdc6c15f6b17e0e59c0777378ca87ff3225ad24fee99070b"
+  },
+  "adr/ADR-001-Technology-Selection.md": {
+    "published": "2026-11-07T16:03:26.003Z",
+    "modified": "2026-11-07T16:03:26.003Z",
+    "sha256": "9a467ba9e2b0df092f0c9a3fade2e157158d46f0ba002ef7e012ecb750cd128f"
+  },
+  "adr/ADR-002-Embedding-Strategy.md": {
+    "published": "2026-11-07T13:44:32.188Z",
+    "modified": "2026-11-07T13:44:32.188Z",
+    "sha256": "08fcb615165ad5392dea1056d41dbdbe82814a0dbb8bcbdaed25f0a344924f7e"
+  },
+  "adr/ADR-003-Chunking-Strategy.md": {
+    "published": "2026-11-07T14:24:15.483Z",
+    "modified": "2026-11-09T08:11:18.610Z",
+    "sha256": "86a15f711f2a69b14b24b9b0e1e4ec2a9e5f5ec40eed74a72adc828ca4ced771"
+  },
+  "adr/ADR-004-Retrieval-Architecture.md": {
+    "published": "2026-11-07T15:30:30.795Z",
+    "modified": "2026-11-07T15:30:30.796Z",
+    "sha256": "a6a8d21b5f612a4594bbdb65240e195dd1930c90e55516286483c8a3277b0069"
+  },
+  "adr/ADR-005-Orchestration-Approach.md": {
+    "published": "2026-11-07T15:14:05.793Z",
+    "modified": "2026-11-07T15:14:05.794Z",
+    "sha256": "dd5d9bf94a6db642c1a38b79bd640d89875bb3c2113365cb8a89ce369ed320d3"
+  },
+  "adr/ADR-006-Multi-Tenancy-and-Isolation.md": {
+    "published": "2026-11-07T16:03:25.190Z",
+    "modified": "2026-11-09T05:28:10.086Z",
+    "sha256": "752f9bb3da1f695ff46375e392a61ca3117a258640a72abb25be1792753d2b7d"
+  },
+  "adr/ADR-007-Query-Transformation-Policy.md": {
+    "published": "2026-11-07T16:15:55.757Z",
+    "modified": "2026-11-07T16:15:55.766Z",
+    "sha256": "4d3c7fe4e3c8be262b71f20aaa0452ab7096c9571db91cc06b7e72d64d84d133"
+  },
+  "adr/ADR-008-Reranking-Policy.md": {
+    "published": "2026-11-08T13:30:33.656Z",
+    "modified": "2026-11-08T13:30:33.656Z",
+    "sha256": "98c836fd1432870b6345c5cbe14f9e8609c483545914e7e7939651cd7a8f8523"
+  },
+  "adr/ADR-009-Metadata-Filtering-Policy.md": {
+    "published": "2026-11-08T13:30:34.481Z",
+    "modified": "2026-11-08T13:30:34.481Z",
+    "sha256": "e1dc5ac808249b38d934784da675c4dc395ef878478c41be5a024a03de2a6fc6"
+  },
+  "adr/ADR-010-Agentic-Retrieval-and-Tool-Policy.md": {
+    "published": "2026-11-08T13:59:40.775Z",
+    "modified": "2026-11-08T13:59:40.777Z",
+    "sha256": "a1253e08ae35ce919be0776400a8bf7ffafbc0fa5aefd4d8291a182726d07d5d"
+  },
+  "adr/ADR-011-Backend-Structure-and-Foundation-Conventions.md": {
+    "published": "2026-11-08T14:38:42.433Z",
+    "modified": "2026-11-09T05:28:10.096Z",
+    "sha256": "858b5ec87b30e51454a5775fa8ad18cbe789d864a913de1e7809e0bef084bd34"
+  },
+  "adr/ADR-012-LLM-Gateway.md": {
+    "published": "2026-11-08T15:48:21.700Z",
+    "modified": "2026-11-08T15:48:21.701Z",
+    "sha256": "b06f195bdb7c314a7a81be95c19708d7672fee81f15bf4d2d5f54ffdf6368318"
+  },
+  "adr/ADR-013-Database-Schema-Roles-and-Access.md": {
+    "published": "2026-11-09T05:26:38.578Z",
+    "modified": "2026-11-09T16:30:23.438Z",
+    "sha256": "bd79c49975dd456e5f12eca19b4352aa3130bad08ddd7f1353f10d160eb8a4f9"
+  },
+  "adr/ADR-014-Raw-Object-Storage.md": {
+    "published": "2026-11-09T05:47:59.078Z",
+    "modified": "2026-11-09T06:00:31.304Z",
+    "sha256": "81153c00ce4890d1b517c4c9240ec105b9c17efc75f8721a6dcadb634149a768"
+  },
+  "adr/ADR-015-Job-Queue-and-Worker-Access.md": {
+    "published": "2026-11-09T05:47:59.927Z",
+    "modified": "2026-11-09T07:58:05.328Z",
+    "sha256": "e9b166509da302d8898ae9c818d8fbf76159f49e55ec44fbd165d6058385737c"
+  },
+  "adr/ADR-016-Extraction-Chunking-And-Worker-Content-Access.md": {
+    "published": "2026-11-09T07:55:44.042Z",
+    "modified": "2026-11-09T07:55:44.043Z",
+    "sha256": "db83ec214d2c56ffd2589d8ef1f1f5a6ddd92946f71cc775c723af0d79408a86"
+  },
+  "adr/ADR-017-Chunk-Embedding-During-Ingestion.md": {
+    "published": "2026-11-09T13:26:26.890Z",
+    "modified": "2026-11-09T13:26:26.890Z",
+    "sha256": "99233a7aed8e7bf4089d27c0562dd85ad11da30ed1bd2bf1aa0c144045312809"
+  },
+  "adr/ADR-018-Evaluation-Policy.md": {
+    "published": "2026-11-09T14:05:43.795Z",
+    "modified": "2026-11-09T14:05:43.796Z",
+    "sha256": "35b2aae36767c53905de81fb600229ea3c0a7dc362d8f60358c2df9de1bffafa"
+  },
+  "adr/ADR-019-Version-Activation-and-Vector-Indexing.md": {
+    "published": "2026-11-10T14:04:01.930Z",
+    "modified": "2026-11-10T14:04:01.931Z",
+    "sha256": "1bd04d9ade4d6a25e7a8b4bb4ab70f33237ac5e99299d2f04154d488129658eb"
+  }
+}

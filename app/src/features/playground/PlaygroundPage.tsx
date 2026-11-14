@@ -3,20 +3,14 @@ import { chapterHrefByNumber } from "@/content/handbook";
 import { track } from "@/shared/analytics/track";
 import { Link } from "@/shared/router/router";
 import { CORPUS, QRELS, SOURCE_FILE } from "./domain/corpus";
-import { DEFAULT_SETTINGS, runHybrid, type HybridSettings, type Method } from "./domain/hybrid";
+import { DEFAULT_SETTINGS, runHybrid, type HybridSettings } from "./domain/hybrid";
 import { FusionDiagram } from "./FusionDiagram";
 import { ResultTable } from "./ResultTable";
 import { Controls } from "./Controls";
+import { HONESTY, HOW_TO_READ, METHODS } from "./labContent";
 import "./playground.css";
 
 const PRESETS = Object.keys(QRELS);
-
-const METHODS: { id: Method; label: string; explain: string }[] = [
-  { id: "bm25", label: "Keyword (BM25)", explain: "Scores documents by the query terms they contain: rare terms count more, repeated terms saturate, long documents are normalised." },
-  { id: "dense", label: "Semantic stand-in", explain: "Cosine similarity of character-trigram vectors. It rewards shared spelling, which is why it matches “contractor” to “Contractors”; it understands nothing." },
-  { id: "rrf", label: "Hybrid, RRF", explain: "Adds 1 / (k + rank) from each leg. It ignores raw scores entirely, so the two legs' incompatible scales never need calibrating." },
-  { id: "minmax", label: "Hybrid, min–max", explain: "Rescales each leg's scores to 0–1 and adds them. It keeps magnitude, so one extreme score can compress all the others." },
-];
 
 export default function PlaygroundPage() {
   const [query, setQuery] = useState("contractor leave");
@@ -136,9 +130,15 @@ export default function PlaygroundPage() {
             </ol>
           </div>
           <div className="lab__honesty">
+            <h2 className="lab__side-h">How to read the results</h2>
+            {HOW_TO_READ.map((p) => (
+              <p key={p}>{p}</p>
+            ))}
+          </div>
+          <div className="lab__honesty">
             <h2 className="lab__side-h">What this is, and is not</h2>
             <p>
-              A deterministic port of <code>{SOURCE_FILE}</code> Part C, checked by a unit test against the script's real output. With eight documents it shows the mechanics of fusion. It says nothing about which method wins on real data; the handbook's advice is to measure on your own golden set, per query class.
+              {HONESTY.before} <code>{SOURCE_FILE}</code> {HONESTY.after}
             </p>
             <p className="lab__links">
               {ch9 && <Link href={ch9}>Read Chapter 9, Hybrid Search</Link>}

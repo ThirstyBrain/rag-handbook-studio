@@ -1,7 +1,7 @@
 import { getHandbook } from "@/content/handbook";
 import { EVIDENCE_LABELS, EVIDENCE_SHORT } from "@/content/parse/evidence";
 import type { EvidenceKind } from "@/content/types";
-import { ISSUES_URL, PUBLISHER, REPO_URL, SITE_DEFINITION } from "@/seo/siteConfig";
+import { AUTHOR, ISSUES_URL, REPO_URL, SITE_DEFINITION } from "@/seo/siteConfig";
 
 export interface AboutSection {
   id: string;
@@ -41,7 +41,10 @@ export function aboutSections(): AboutSection[] {
     {
       id: "maintained-by",
       title: "Who maintains it",
-      paragraphs: [`The handbook and this reading application are maintained by ${PUBLISHER.name} in one public repository. Chapters and the application are versioned together, so every change to a page is in the commit history.`],
+      paragraphs: [
+        `The handbook and this reading application are written and maintained by ${AUTHOR.name} in one public repository. Chapters and the application are versioned together, so every change to a page is in the commit history.`,
+        ...(AUTHOR.bio ? [AUTHOR.bio] : []),
+      ],
       link: { href: REPO_URL, label: "View the repository" },
     },
     {

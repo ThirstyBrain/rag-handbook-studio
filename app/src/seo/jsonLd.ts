@@ -2,9 +2,10 @@ import { findAdr, findChapter, getHandbook } from "@/content/handbook";
 import { toPlainText } from "@/content/parse/text";
 import { matchPath } from "@/shared/router/router";
 import { contentDates } from "./dates";
+import { interviewGroups } from "@/features/interview/interviewData";
 import { parseInterviewFaq } from "./faq";
 import { getPageMeta } from "./pageMeta";
-import { PUBLISHER, REPO_URL, SITE_DEFINITION, SITE_NAME, SITE_SUBTITLE } from "./siteConfig";
+import { AUTHOR, PUBLISHER, REPO_URL, SITE_DEFINITION, SITE_NAME, SITE_SUBTITLE } from "./siteConfig";
 import { stripEvidence } from "./text";
 
 type Json = Record<string, unknown>;
@@ -15,6 +16,16 @@ const organization = (siteUrl: string): Json => ({
   name: PUBLISHER.name,
   url: PUBLISHER.url,
   sameAs: [PUBLISHER.url, REPO_URL],
+});
+
+const person = (siteUrl: string): Json => ({
+  "@type": "Person",
+  "@id": `${siteUrl}/#author`,
+  name: AUTHOR.name,
+  url: AUTHOR.url,
+  sameAs: AUTHOR.sameAs,
+  ...(AUTHOR.bio ? { description: AUTHOR.bio } : {}),
+  worksFor: { "@id": `${siteUrl}/#publisher` },
 });
 
 const website = (siteUrl: string): Json => ({
@@ -45,7 +56,7 @@ function techArticle(siteUrl: string, meta: { description: string; path: string 
     mainEntityOfPage: `${siteUrl}${meta.path}`,
     inLanguage: "en",
     proficiencyLevel: "Expert",
-    author: { "@id": `${siteUrl}/#publisher` },
+    author: { "@id": `${siteUrl}/#author` },
     publisher: { "@id": `${siteUrl}/#publisher` },
     isPartOf: { "@id": `${siteUrl}/#website` },
     ...(dates ? { datePublished: dates.published, dateModified: dates.modified } : {}),
@@ -58,7 +69,7 @@ export function buildJsonLd(rawPath: string, siteUrl: string): Json[] {
   const meta = getPageMeta(rawPath);
   if (!meta) return [];
   const hb = getHandbook();
-  const base = [organization(siteUrl), website(siteUrl)];
+  const base = [organization(siteUrl), person(siteUrl), website(siteUrl)];
   if (meta.path === "/") return base;
 
   const home = { name: SITE_NAME, path: "/" };
@@ -93,7 +104,7 @@ export function buildJsonLd(rawPath: string, siteUrl: string): Json[] {
     return [...base, techArticle(siteUrl, meta, `${adr.id}: ${adr.title}`, adr.sourcePath), crumbs({ name: "Decisions", path: "/decisions" }, { name: adr.id, path: meta.path })];
   }
 
-  const label = meta.path.slice(1).replace(/^./, (s) => s.toUpperCase());
+  const label = meta.card.label;
   const graph: Json[] = [
     ...base,
     { "@type": "WebPage", name: meta.title, description: meta.description, url: `${siteUrl}${meta.path}`, isPartOf: { "@id": `${siteUrl}/#website` } },
@@ -112,6 +123,13 @@ export function buildJsonLd(rawPath: string, siteUrl: string): Json[] {
         url: `${siteUrl}/glossary#${t.slug}`,
         inDefinedTermSet: `${siteUrl}/glossary`,
       })),
+    });
+  }
+
+  if (meta.path === "/interview-questions") {
+    graph.push({
+      "@type": "FAQPage",
+      mainEntity: interviewGroups().flatMap((g) => g.items.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } }))),
     });
   }
 

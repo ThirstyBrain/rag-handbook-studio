@@ -12,7 +12,7 @@ export const HANDBOOK_DIR = path.resolve(root, "../handbook");
 export default defineConfig({
   plugins: [react(), handbookImages(HANDBOOK_DIR)],
   // Page dates come from git history, so "last updated" is never invented.
-  define: { __CONTENT_DATES__: JSON.stringify(readContentDates(HANDBOOK_DIR)) },
+  define: { __CONTENT_DATES__: JSON.stringify(readContentDates(HANDBOOK_DIR, path.resolve(root, "content-dates.json"))) },
   resolve: {
     alias: {
       "@": path.resolve(root, "src"),

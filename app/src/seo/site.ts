@@ -1,15 +1,15 @@
 import { getHandbook } from "@/content/handbook";
 import { escapeHtml } from "@/shared/markdown/highlight";
 import { buildJsonLd, jsonLdScript } from "./jsonLd";
+import { renderCard } from "./ogCard";
 import { getPageMeta, listIndexablePaths, NOT_FOUND_META, type PageMeta } from "./pageMeta";
 import { renderSnapshot } from "./snapshot";
-import { OG_IMAGE_PATH, SITE_DEFINITION, SITE_NAME, SITE_SUBTITLE } from "./siteConfig";
+import { ogFileName } from "./ogPath";
+import { OG_IMAGE_DIR, SITE_DEFINITION, SITE_NAME, SITE_SUBTITLE } from "./siteConfig";
 
 export interface BuildOptions {
   /** Absolute origin without a trailing slash, e.g. "https://example.com". */
   siteUrl: string;
-  /** Whether public/og-image.png exists. */
-  hasOgImage: boolean;
 }
 
 export interface StaticPage {
@@ -21,11 +21,17 @@ export interface StaticPage {
   body: string;
 }
 
+export interface OgCardFile {
+  /** File name inside the og folder, e.g. "handbook-01-traditional-llm-vs-rag.png". */
+  file: string;
+  png: Buffer;
+}
+
 const a = escapeHtml;
 
-export function buildHead(meta: PageMeta, { siteUrl, hasOgImage }: BuildOptions, jsonLd = ""): string {
+export function buildHead(meta: PageMeta, { siteUrl }: BuildOptions, jsonLd = ""): string {
   const url = `${siteUrl}${meta.path === "/" ? "/" : meta.path}`;
-  const image = hasOgImage ? `${siteUrl}${OG_IMAGE_PATH}` : "";
+  const image = meta.noindex ? "" : `${siteUrl}${OG_IMAGE_DIR}/${ogFileName(meta.path)}`;
   const tags = [
     `<title>${a(meta.title)}</title>`,
     `<meta name="description" content="${a(meta.description)}" />`,
@@ -37,7 +43,9 @@ export function buildHead(meta: PageMeta, { siteUrl, hasOgImage }: BuildOptions,
     `<meta property="og:url" content="${a(url)}" />`,
     `<meta property="og:locale" content="en_US" />`,
     meta.modified && meta.ogType === "article" ? `<meta property="article:modified_time" content="${a(meta.modified)}" />` : "",
-    image ? `<meta property="og:image" content="${a(image)}" />\n    <meta property="og:image:width" content="1200" />\n    <meta property="og:image:height" content="630" />\n    <meta property="og:image:alt" content="${a(SITE_NAME)}" />` : "",
+    image
+      ? `<meta property="og:image" content="${a(image)}" />\n    <meta property="og:image:type" content="image/png" />\n    <meta property="og:image:width" content="1200" />\n    <meta property="og:image:height" content="630" />\n    <meta property="og:image:alt" content="${a(meta.card.heading)}" />`
+      : "",
     `<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}" />`,
     `<meta name="twitter:title" content="${a(meta.title)}" />`,
     `<meta name="twitter:description" content="${a(meta.description)}" />`,
@@ -51,6 +59,15 @@ export function buildPages(options: BuildOptions): StaticPage[] {
   return listIndexablePaths().map((path) => {
     const meta = getPageMeta(path)!;
     return { path: meta.path, head: buildHead(meta, options, jsonLdScript(buildJsonLd(path, options.siteUrl), meta.path)), body: renderSnapshot(meta.path) };
+  });
+}
+
+/** One social card per indexable page, titled with the page's own heading. */
+export function buildOgCards({ siteUrl }: BuildOptions): OgCardFile[] {
+  const footer = new URL(siteUrl).host;
+  return listIndexablePaths().map((path) => {
+    const { card } = getPageMeta(path)!;
+    return { file: ogFileName(path), png: renderCard({ ...card, footer }) };
   });
 }
 
@@ -89,6 +106,7 @@ export function buildLlmsTxt({ siteUrl }: BuildOptions): string {
     "",
     "## Reference",
     `- [Contents](${siteUrl}/handbook): all chapters by part`,
+    `- [Interview questions](${siteUrl}/interview-questions): model answers collected from every chapter`,
     `- [Architecture decisions](${siteUrl}/decisions): ${hb.adrs.length} decision records`,
     `- [Glossary](${siteUrl}/glossary): ${hb.glossary.length} defined terms`,
     `- [References](${siteUrl}/references): reviewed sources`,

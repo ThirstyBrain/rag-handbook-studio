@@ -18,10 +18,23 @@ export const PUBLISHER = {
   url: "https://github.com/ThirstyBrain",
 } as const;
 
+/**
+ * The named author, shown as a byline and in structured data. Optional fields are used only when set:
+ * add `bio` (a sentence on your experience with production RAG) and `sameAs` profile links such as LinkedIn.
+ */
+export const AUTHOR: { name: string; url: string; bio?: string; sameAs: string[] } = {
+  name: "Kumar Shivam",
+  url: PUBLISHER.url,
+  sameAs: [PUBLISHER.url],
+};
+
 export const REPO_URL = "https://github.com/ThirstyBrain/rag-handbook-studio";
 export const ISSUES_URL = `${REPO_URL}/issues`;
 
-/** Optional 1200x630 social card. Used only when the file exists in public/. */
-export const OG_IMAGE_PATH = "/og-image.png";
+/** Prefix for generated social cards (dist/og/<page>.png, 1200x630). */
+export const OG_IMAGE_DIR = "/og";
+
+export const TITLE_SUFFIX = " | RAG Handbook";
+export const TITLE_MAX = 60;
 
 export const META_DESCRIPTION_MAX = 155;
