@@ -1,41 +1,101 @@
-# RAG Handbook Studio
+# RAG Architecture Handbook
 
-A production-grade RAG architecture handbook (`handbook/`) and the interactive reading application that renders it (`app/`).
+**An evidence-labelled engineering handbook for designing, evaluating, securing and operating production Retrieval-Augmented Generation (RAG) systems, with an interactive reading application.**
 
-| Folder | What it is |
+[![CI](https://github.com/ThirstyBrain/rag-handbook-studio/actions/workflows/ci.yml/badge.svg)](https://github.com/ThirstyBrain/rag-handbook-studio/actions/workflows/ci.yml)
+[![Live site](https://img.shields.io/badge/live-rag--handbook--studio.netlify.app-0a7d5a)](https://rag-handbook-studio.netlify.app/)
+
+**Read it online: [rag-handbook-studio.netlify.app](https://rag-handbook-studio.netlify.app/)**
+
+---
+
+## Overview
+
+Most RAG material stops at a demo. This handbook covers what comes after: the trade-offs, failure modes, security model, evaluation and cost decisions of a system that has to run in production. It is written for software architects, solution architects, technical leads and platform engineers.
+
+Two things make it different from a blog series:
+
+- **Every claim is labelled by its evidence.** A tag on each significant statement says whether it rests on a reviewed source, was executed in this repository, is engineering reasoning, an assumption, or illustrative only. Nothing is presented as a measured result unless it was measured.
+- **The examples run.** Exercises are plain-Python scripts whose real output is captured and shown beside the source, including mutation checks that prove the tests can fail.
+
+## What is inside
+
+| Area | Contents |
 |---|---|
-| [`handbook/`](handbook) | Canonical content: chapters, ADRs, diagrams, exercises, reference implementation. Read-only input for the app. |
-| [`app/`](app) | React + Vite + TypeScript reader. Reads `../handbook` at build time via the `@handbook` alias. |
+| **Chapters** | 33 chapters in parts, from fundamentals (embeddings, chunking, vector stores) through hybrid search, reranking, agentic RAG, evaluation, monitoring, security and governance, to enterprise architecture patterns and interview preparation. Some chapters are still being written and say so. |
+| **Architecture decisions** | 19 ADRs recording the context, options considered, decision, trade-offs and the conditions that would reverse it. |
+| **Exercises** | 29 runnable scripts with captured output and knowledge-checkpoint questions. |
+| **Glossary and references** | 256 defined terms and 200+ reviewed sources, linked back to the chapters that use them. |
+| **Diagrams** | 60+ Mermaid diagrams, rendered in the reader and as figures. |
+| **Reference implementation** | A runnable, incrementally built backend (FastAPI, PostgreSQL with pgvector, an LLM gateway with provider fallback). Work in progress; see its README for current status. |
 
-## Quick start
+## The reading application
 
-```bash
-cd app
-npm ci
-npm run dev      # http://localhost:5180
-npm run check    # typecheck + lint + tests + build
+The reader renders the handbook's own Markdown, so the site and the repository never drift apart.
+
+- Chapter reader with outline and scroll-spy, reading progress, evidence highlighter, source popovers, highlighted code with copy, and `[` / `]` to move between chapters
+- Architecture map linking each pipeline stage to its chapters, diagrams and decisions
+- A hybrid-search lab that runs BM25, a trigram stand-in for vectors and reciprocal rank fusion in the browser, with per-term score explanations
+- Command palette search (`Ctrl/⌘ K` or `/`) across chapters, terms, decisions, exercises and sources
+- Static prerendering of every route, so the content is available without JavaScript
+- Built with React 18, TypeScript, Vite, Marked and Mermaid. Tested with Vitest and Testing Library.
+
+## Repository layout
+
+```
+.
+├── handbook/     Canonical content: chapters, ADRs, diagrams, exercises, reference implementation
+├── app/          React + Vite reading application (reads ../handbook at build time)
+├── netlify.toml  Deployment configuration
+└── .github/      Continuous integration
 ```
 
-Node 20+ is required. Python 3.11+ is only needed to re-capture exercise output (`npm run exercises`).
+The application treats `handbook/` as read-only input. Edit content there, never from `app/`.
 
-## Deploy
+## Getting started
 
-The app is a static site. `npm run build` type-checks, bundles, then **prerenders every route to static HTML** (`app/scripts/prerender.mjs`) so crawlers and AI tools get real content without running JavaScript. It also writes `404.html`, `sitemap.xml`, `robots.txt` and `llms.txt`. There is deliberately no catch-all rewrite: unknown URLs return a true 404. The build must see the whole repo because it imports `../handbook`.
+Requires Node.js 20 or later. Python 3.11 or later is needed only to re-capture exercise output.
 
-- **Netlify:** import the repo; `netlify.toml` at the root configures everything.
-- **Vercel:** import the repo, set *Root Directory* to `app`, and keep "Include files outside the Root Directory" enabled.
+```bash
+git clone https://github.com/ThirstyBrain/rag-handbook-studio.git
+cd rag-handbook-studio/app
+npm ci
+npm run dev        # http://localhost:5180
+```
 
-The canonical site origin is `SITE_URL`, else Netlify's `URL` variable, else `DEFAULT_SITE_URL` in `app/src/seo/siteConfig.ts`. Set `SITE_URL` when you add a custom domain.
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Development server |
+| `npm run build` | Type-check, bundle, then prerender every route into `dist/` |
+| `npm run preview` | Serve the production build locally |
+| `npm run check` | Type-check, lint, test and build |
+| `npm run exercises` | Re-run the handbook exercises and record their output |
 
-## SEO and AEO
+## How it is built
 
-All of it lives in `app/src/seo`: per-page titles, descriptions, canonicals, Open Graph/Twitter tags and JSON-LD (TechArticle, BreadcrumbList, FAQPage from each chapter's interview questions, DefinedTermSet for the glossary). "Last updated" dates come from git history. To get a social preview image, add a 1200x630 `app/public/og-image.png`; the build picks it up automatically.
+The site is fully static. `npm run build` bundles the app, then `app/scripts/prerender.mjs` writes one HTML file per route with its own title, description, canonical link, Open Graph tags and JSON-LD (TechArticle, BreadcrumbList, FAQPage, DefinedTermSet). It also generates `sitemap.xml`, `robots.txt`, `llms.txt` and a `404.html`. Unknown URLs return a real 404. Page dates are taken from git history rather than invented.
 
-## Known issues
+Design notes and audits live in [`app/docs/`](app/docs): implementation plan, design system, and validation report.
 
-- `npm test` has one failing test while `ch29_sql_guard.py` cannot run: it needs `psycopg`, and its captured run in `app/src/generated/exercise-runs.json` records a failure. Install `psycopg` and run `npm run exercises` to refresh.
-- Large single chunk: the whole handbook ships in one cached chunk (see UI-ADR-1 in `app/docs/IMPLEMENTATION_PLAN.md`).
+## Deployment
 
-## Layout rule
+Hosted on Netlify, deployed from `main`. [`netlify.toml`](netlify.toml) sets the base directory (`app`), build command and publish directory.
 
-Edit content in `handbook/`, never from `app/`. After changing exercises, run `npm run exercises` in `app/` to refresh captured output.
+- **Netlify:** import the repository; no further settings are needed.
+- **Vercel:** set the Root Directory to `app` and keep "Include files outside the Root Directory" enabled.
+
+The canonical origin comes from `SITE_URL`, then Netlify's `URL` variable, then the default in `app/src/seo/siteConfig.ts`. Set `SITE_URL` if you move to a custom domain.
+
+## Status and known issues
+
+- The handbook is in active development; chapters marked in progress will change.
+- One test (`ch29_sql_guard.py` captured run) fails on machines without the `psycopg` package. Install it and run `npm run exercises` to refresh the capture.
+- The whole handbook ships as one cached JavaScript chunk. Splitting it per chapter is planned; see UI-ADR-1 in [`app/docs/IMPLEMENTATION_PLAN.md`](app/docs/IMPLEMENTATION_PLAN.md).
+
+## Feedback and corrections
+
+Found an error, a stale source or an exercise that does not run? [Open an issue](https://github.com/ThirstyBrain/rag-handbook-studio/issues) naming the chapter and section.
+
+## Author
+
+Created and maintained by [Kumar Shivam](https://github.com/ThirstyBrain).

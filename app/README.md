@@ -1,5 +1,7 @@
 # RAG Architecture Handbook: reading application
 
+Live: https://rag-handbook-studio.netlify.app/
+
 An interactive reading interface for [`../handbook`](../handbook). Every page is rendered from the handbook's own Markdown, ADRs, diagrams and exercise scripts at build time; the handbook folder is only ever read.
 
 ## Run
